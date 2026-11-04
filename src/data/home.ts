@@ -57,13 +57,39 @@ export const process = {
   eyebrow: '03 · Our process',
   title: 'Two weeks, start to finish.',
   intro: 'A fixed schedule, so you always know what happens next and exactly when your site goes live.',
-  // start and end are days 1–14; tone picks the bar color.
+  hint: 'Pick a step for details',
+  // start and end are days 1–14; tone picks the bar color; icon picks the glyph in the detail box.
   phases: [
-    { days: 'Day 1', name: 'Kickoff', note: 'One call to set goals, pages and must-haves.', start: 1, end: 1, tone: 'peach' },
-    { days: 'Days 2–4', name: 'Plan', note: 'Sitemap, content plan and a design direction you approve.', start: 2, end: 4, tone: 'mint' },
-    { days: 'Days 5–10', name: 'Design + build', note: 'We design in the browser and build as we go, so you see real progress every few days.', start: 5, end: 10, tone: 'cobalt' },
-    { days: 'Days 11–12', name: 'Review + polish', note: 'Your feedback, our fixes, then speed and accessibility checks.', start: 11, end: 12, tone: 'peach' },
-    { days: 'Days 13–14', name: 'Launch + handoff', note: 'We go live and set you up to update your site with AI.', start: 13, end: 14, tone: 'ink' },
+    {
+      days: 'Day 1', name: 'Kickoff', note: 'One call to set goals, pages and must-haves.', start: 1, end: 1, tone: 'peach', icon: 'call',
+      detail: 'One call to learn your business: who you serve, what you sell and what the site needs to do. We finish with a short brief and a launch date on the calendar.',
+      youGet: ['A one-page project brief', 'A launch date, set on day one'],
+      yourTime: 'About an hour on a call',
+    },
+    {
+      days: 'Days 2–4', name: 'Plan', note: 'Sitemap, content plan and a design direction you approve.', start: 2, end: 4, tone: 'mint', icon: 'plan',
+      detail: 'We map every page, gather what you already have (logo, photos, copy) and agree on a design direction with you before anything gets built.',
+      youGet: ['A sitemap and content plan', 'A design direction to approve'],
+      yourTime: 'About 30 minutes to review',
+    },
+    {
+      days: 'Days 5–10', name: 'Design + build', note: 'We design in the browser and build as we go, so you see real progress every few days.', start: 5, end: 10, tone: 'cobalt', icon: 'build',
+      detail: 'We design in the browser and build as we go, so what you review is the real site, not a mockup. Check the preview link whenever you like.',
+      youGet: ['A live preview link', 'Progress you can see every few days'],
+      yourTime: 'A quick look when it suits you',
+    },
+    {
+      days: 'Days 11–12', name: 'Review + polish', note: 'Your feedback, our fixes, then speed and accessibility checks.', start: 11, end: 12, tone: 'peach', icon: 'review',
+      detail: 'You tell us what to change and we make it. Then we test speed, accessibility and every screen size before anything goes live.',
+      youGet: ['Your changes, made', 'Speed and accessibility checks'],
+      yourTime: 'About an hour of feedback',
+    },
+    {
+      days: 'Days 13–14', name: 'Launch + handoff', note: 'We go live and set you up to update your site with AI.', start: 13, end: 14, tone: 'ink', icon: 'launch',
+      detail: 'We put the site live on your domain, then show you how to update it yourself by asking Claude in plain English.',
+      youGet: ['Your site, live on your domain', 'A walkthrough of updating with Claude'],
+      yourTime: 'About an hour for the walkthrough',
+    },
   ],
 } as const;
 

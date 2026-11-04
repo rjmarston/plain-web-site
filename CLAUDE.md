@@ -18,6 +18,7 @@ This is the Plainweb marketing site (Astro, hosted on Cloudflare). Plainweb sell
 - Buttons: `pw-btn` plus one of `pw-btn-primary`, `-secondary`, `-dark`, `-warm`, `-ghost-light`. At least 44px tall.
 - Motion is for feedback and a few story moments, never decoration:
   - Hover and press states on buttons, links and tier cards, plus the sticky header (hides on scroll down, returns on scroll up).
+  - The process chart: on desktop, hovering, focusing or clicking a row shows that step in the detail box beside it; on phones, rows open inline. Step details live in `src/data/home.ts` (`process.phases`).
   - Four moments that play once: the hero highlight, the ledger strike, the chat replay and the process bars. Mark new ones with `data-play`.
   - Use the motion tokens (100 / 150 / 200 / 300ms; ease out to enter, ease in to leave) and animate only `transform` and `opacity`.
   - Every animation needs a `prefers-reduced-motion: reduce` fallback, and content must show finished without JavaScript.
