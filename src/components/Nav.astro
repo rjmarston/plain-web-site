@@ -1,0 +1,65 @@
+---
+import Logo from './Logo.astro';
+import { nav } from '../data/site';
+---
+
+<header class="site-header">
+  <div class="pw-container bar">
+    <a href="/" class="home" aria-label="Plainweb home"><Logo /></a>
+
+    <nav aria-label="Main" class="links">
+      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href="/#start" class="pw-btn pw-btn-dark">Start a site</a>
+    </nav>
+
+    <details class="menu">
+      <summary>Menu</summary>
+      <nav aria-label="Mobile" class="panel">
+        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        <a href="/#start" class="pw-btn pw-btn-dark pw-btn-block">Start a site</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<script>
+  // Close the mobile menu after choosing a link, or on Escape.
+  document.querySelectorAll<HTMLDetailsElement>('.menu').forEach((menu) => {
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => (menu.open = false)));
+    menu.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.open) {
+        menu.open = false;
+        menu.querySelector('summary')?.focus();
+      }
+    });
+  });
+</script>
+
+<style>
+  .site-header { background: var(--paper); border-bottom: var(--border-default) dashed var(--line); position: relative; z-index: 5; }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 76px; }
+  .home { text-decoration: none; color: var(--ink); }
+  .links { display: flex; align-items: center; gap: 1.75rem; font-size: 0.9375rem; font-weight: 500; }
+  .links a:not(.pw-btn) { text-decoration: none; padding: 6px 0; }
+
+  .menu { display: none; }
+  .menu summary {
+    list-style: none; cursor: pointer; display: inline-flex; align-items: center;
+    min-height: 44px; padding: 0 1.15rem; border: var(--border-default) solid var(--ink); border-radius: var(--radius-pill);
+    background: var(--white); font-size: 0.9375rem; font-weight: 600;
+  }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu[open] summary { background: var(--ink); color: var(--paper-raised); }
+  .panel {
+    position: absolute; left: 0; right: 0; top: 100%;
+    background: var(--paper); border-bottom: var(--border-default) solid var(--ink);
+    display: flex; flex-direction: column; padding: var(--space-2) var(--space-6) var(--space-6);
+  }
+  .panel a:not(.pw-btn) { padding: 14px 0; border-bottom: var(--border-hairline) solid var(--line-soft); text-decoration: none; font-size: 1.0625rem; font-weight: 500; }
+  .panel .pw-btn { margin-top: var(--space-5); }
+
+  @media (max-width: 900px) {
+    .links { display: none; }
+    .menu { display: block; }
+  }
+</style>

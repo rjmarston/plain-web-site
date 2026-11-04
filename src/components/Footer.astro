@@ -1,0 +1,24 @@
+---
+import Logo from './Logo.astro';
+import { footerNav } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-ink">
+  <div class="pw-container row">
+    <a href="/" class="home" aria-label="Plainweb home"><Logo tone="ink" size="sm" /></a>
+    <nav aria-label="Footer" class="links">
+      {footerNav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+    <p class="spec fine">© {year} Plainweb · hand-built, hosted on Cloudflare</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--ink); color: var(--on-ink-muted); border-top: var(--border-hairline) solid var(--ink-line); }
+  .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem 2rem; padding-top: 1.75rem; padding-bottom: 1.75rem; }
+  .home { text-decoration: none; }
+  .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.875rem; }
+  .links a { color: var(--paper-raised); text-decoration: none; padding: 6px 0; }
+  .links a:hover { color: var(--peach); }
+</style>

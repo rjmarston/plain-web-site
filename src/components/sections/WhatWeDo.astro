@@ -1,0 +1,25 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import Cube from '../Cube.astro';
+import { what } from '../../data/home';
+---
+
+<section class="pw-section" id="what" aria-labelledby="what-title">
+  <div class="pw-container">
+    <SectionHeader eyebrow={what.eyebrow} title={what.title} intro={what.intro} id="what-title" />
+    <ul role="list" class="cards">
+      {what.cards.map((c) => (
+        <li class="pw-card">
+          <Cube palette={c.cube} />
+          <h3 class="title">{c.title}</h3>
+          <p class="muted">{c.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cards { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+  .cards li { flex: 1 1 300px; min-width: 0; }
+</style>

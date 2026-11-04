@@ -1,0 +1,18 @@
+---
+import Cube from './Cube.astro';
+interface Props { tone?: 'light' | 'ink'; size?: 'md' | 'sm'; }
+const { tone = 'light', size = 'md' } = Astro.props;
+---
+
+<span class:list={['logo', `logo--${tone}`, `logo--${size}`]}>
+  <Cube size={size === 'md' ? 26 : 20} onInk={tone === 'ink'} />
+  <span class="word">plainweb</span>
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 10px; }
+  .word { font-size: 1.375rem; line-height: 1; font-weight: 700; letter-spacing: -0.03em; }
+  .logo--sm { gap: 8px; }
+  .logo--sm .word { font-size: 1.125rem; }
+  .logo--ink .word { color: var(--paper-raised); }
+</style>

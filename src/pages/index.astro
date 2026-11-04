@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import WhatWeDo from '../components/sections/WhatWeDo.astro';
+import Why from '../components/sections/Why.astro';
+import Process from '../components/sections/Process.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Integrations from '../components/sections/Integrations.astro';
+import Start from '../components/sections/Start.astro';
+import { pricing } from '../data/home';
+import { site } from '../data/site';
+
+// Lets search engines read the three packages and their starting prices.
+const offers = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Custom small-business websites in two weeks',
+  provider: { '@type': 'Organization', name: site.name },
+  offers: pricing.tiers.map((t) => ({
+    '@type': 'Offer',
+    name: t.name,
+    description: t.bestFor,
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      minPrice: Number(t.price.replace(/[^0-9]/g, '')),
+      priceCurrency: 'USD',
+    },
+  })),
+};
+---
+
+<Base jsonLd={[offers]}>
+  <Hero />
+  <WhatWeDo />
+  <Why />
+  <Process />
+  <Pricing />
+  <Integrations />
+  <Start />
+</Base>

@@ -1,0 +1,83 @@
+/*
+  Design tokens. These mirror the Plainweb design system and the Figma
+  variables one to one (Color, Spacing, Shape and Type collections), so a
+  name here is the same name in Figma: --cobalt is color/brand/cobalt.
+*/
+:root {
+  /* Color · neutral */
+  --paper: #f6f5f1;
+  --paper-raised: #fbfaf7;
+  --white: #ffffff;
+  --slab: #f3f3f7;
+  --ink: #15172b;
+  --ink-muted: #555872;
+  --ink-placeholder: #6e7190;
+  --ink-faint: #8a8da6;
+
+  /* Color · lines */
+  --line: #bfc2da;
+  --line-soft: #d5d7e6;
+  --tint: #e2e3ee;
+  --grid-line: #dee0ec;
+
+  /* Color · brand */
+  --cobalt: #3346ff;
+  --on-cobalt: #ffffff;
+  --on-cobalt-soft: #e4e7ff;
+  --on-cobalt-label: #dce0ff;
+  --peach: #ffb59a;
+  --mint: #b9ebd3;
+  --mint-deep: #7fcfaa;
+
+  /* Color · on ink */
+  --on-ink-muted: #c9cbdb;
+  --ink-line: #2b2e48;
+
+  /* Color · depicted changes */
+  --remove-bg: #ffe9e1;
+  --remove-ink: #7a2e16;
+  --add-bg: #dff5ea;
+  --add-ink: #14532d;
+
+  /* Type */
+  --font-sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Fluid sizes: the Figma Type collection holds the two ends (Desktop / Mobile). */
+  --fs-display: clamp(2.75rem, 6vw, 4.75rem);
+  --fs-display-sm: clamp(2.3rem, 5vw, 4rem);
+  --fs-heading-1: clamp(2.1rem, 4.2vw, 3.4rem);
+  --fs-heading-2: clamp(1.5rem, 2.6vw, 2rem);
+  --fs-statement: clamp(1.3rem, 2.2vw, 1.7rem);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-section: clamp(4.5rem, 10vw, 6.5rem); /* 104px desktop, 72px phones */
+  --container-max: 1200px;
+
+  /* Shape */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+  --border-default: 1.5px;
+  --border-hairline: 1px;
+
+  /* Shadows: hard ink offsets, never blurred */
+  --shadow-hard-sm: 4px 4px 0 var(--ink);
+  --shadow-hard: 6px 6px 0 var(--ink);
+  --shadow-hard-lg: 8px 8px 0 var(--ink);
+  --shadow-sticky: 3px 4px 0 rgba(21, 23, 43, 0.18);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-drop: cubic-bezier(0.3, 1.35, 0.5, 1);
+}

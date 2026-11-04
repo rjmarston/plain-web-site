@@ -1,0 +1,40 @@
+---
+import Cube from '../Cube.astro';
+import { start } from '../../data/home';
+import { site, startHref } from '../../data/site';
+---
+
+<section class="pw-section pw-tex-ink on-ink" id="start" aria-labelledby="start-title">
+  <div class="pw-container row">
+    <div class="copy">
+      <p class="eyebrow">{start.eyebrow}</p>
+      <h2 class="display-sm" id="start-title">{start.title}</h2>
+      <p class="body-md intro">{start.intro}</p>
+      <div class="actions">
+        <a href={startHref} class="pw-btn pw-btn-warm">{start.cta}</a>
+        <a href={`mailto:${site.email}`} class="pw-btn pw-btn-ghost-light">Email {site.email}</a>
+      </div>
+    </div>
+    <div class="art" aria-hidden="true">
+      <Cube size={220} onInk />
+      <span class="note spec">{start.note}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pw-section > .row { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 3rem; }
+  .copy { flex: 1 1 480px; display: flex; flex-direction: column; gap: 1.25rem; }
+  .eyebrow { color: var(--peach); }
+  .intro { max-width: 32rem; color: var(--on-ink-muted); }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+  .art { position: relative; flex: 0 1 300px; display: flex; justify-content: center; }
+  .art :global(.cube) { width: 100%; max-width: 240px; height: auto; }
+  .note { position: absolute; left: -6%; bottom: 4%; background: var(--mint); color: var(--ink); padding: 0.7rem 0.9rem; transform: rotate(-5deg); box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.25); }
+  @media (max-width: 640px) {
+    .actions .pw-btn { width: 100%; }
+    .art { flex-basis: 100%; }
+    .art :global(.cube) { max-width: 190px; }
+    .note { left: 8%; }
+  }
+</style>

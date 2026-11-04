@@ -1,0 +1,35 @@
+---
+// The Plainweb cube. One cube = one finished thing.
+// brand: the mark and "live" · build: code · launch: content and support · review: finished but grey.
+interface Props {
+  palette?: 'brand' | 'build' | 'launch' | 'review';
+  size?: number;
+  onInk?: boolean;
+  class?: string;
+}
+const { palette = 'brand', size = 40, onInk = false, class: className } = Astro.props;
+const faces = {
+  brand: ['var(--white)', 'var(--peach)', 'var(--cobalt)'],
+  build: ['var(--white)', 'var(--tint)', 'var(--ink)'],
+  launch: ['var(--white)', 'var(--mint)', 'var(--mint-deep)'],
+  review: ['var(--white)', 'var(--tint)', 'var(--line)'],
+}[palette];
+const stroke = onInk ? 'var(--paper-raised)' : 'var(--ink)';
+---
+
+<svg
+  class:list={['cube', className]}
+  aria-hidden="true"
+  width={size}
+  height={size * 1.1}
+  viewBox="0 0 40 44"
+  style={`stroke: ${stroke}`}
+>
+  <path d="M20 2 L38 12.5 L20 23 L2 12.5 Z" style={`fill: ${faces[0]}`}></path>
+  <path d="M2 12.5 L20 23 L20 42 L2 31.5 Z" style={`fill: ${faces[1]}`}></path>
+  <path d="M38 12.5 L20 23 L20 42 L38 31.5 Z" style={`fill: ${faces[2]}`}></path>
+</svg>
+
+<style>
+  .cube { flex-shrink: 0; stroke-width: 1.5px; stroke-linejoin: round; overflow: visible; }
+</style>

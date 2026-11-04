@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: replace the domain once it's registered.
+Sitemap: https://plainweb.example/sitemap-index.xml
