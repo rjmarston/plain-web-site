@@ -7,13 +7,13 @@ const days = Array.from({ length: 14 }, (_, i) => i + 1);
 <section class="pw-section pw-tex-dots" id="process" aria-labelledby="process-title">
   <div class="pw-container">
     <SectionHeader eyebrow={process.eyebrow} title={process.title} intro={process.intro} id="process-title" />
-    <div class="schedule">
+    <div class="schedule" data-play>
       <div class="ruler" aria-hidden="true">
         <span class="spacer"></span>
         <span class="days label">{days.map((d) => <span>{d}</span>)}</span>
       </div>
       <ol role="list">
-        {process.phases.map((p) => (
+        {process.phases.map((p, i) => (
           <li class="phase">
             <div class="text">
               <span class="spec when">{p.days}</span>
@@ -21,7 +21,7 @@ const days = Array.from({ length: 14 }, (_, i) => i + 1);
               <p class="body-sm muted">{p.note}</p>
             </div>
             <div class="track" aria-hidden="true">
-              <span class:list={['bar', p.tone]} style={`grid-column: ${p.start} / ${p.end + 1}`}></span>
+              <span class:list={['bar', p.tone]} style={`grid-column: ${p.start} / ${p.end + 1}; --i: ${i}`}></span>
             </div>
           </li>
         ))}
@@ -45,7 +45,11 @@ const days = Array.from({ length: 14 }, (_, i) => i + 1);
     background-image: linear-gradient(90deg, var(--tint) 1px, transparent 1px); background-size: calc(100% / 14) 100%;
     border-right: var(--border-hairline) solid var(--tint);
   }
-  .bar { margin: 0 2px; border: var(--border-default) solid var(--ink); border-radius: 8px; }
+  .bar { margin: 0 2px; border: var(--border-default) solid var(--ink); border-radius: 8px; transform-origin: left center; }
+  /* The bars fill in from the left, in order, once the schedule scrolls into view. */
+  :global(.js) [data-play] .bar { transform: scaleX(0); transition: transform var(--motion-300) var(--ease-out); transition-delay: calc(var(--i) * 30ms + 150ms); }
+  :global(.js) [data-play].is-in .bar { transform: none; }
+  @media (prefers-reduced-motion: reduce) { :global(.js) [data-play] .bar { transform: none; transition: none; } }
   .peach { background: var(--peach); }
   .mint { background: var(--mint); }
   .cobalt { background: var(--cobalt); }

@@ -3,19 +3,22 @@ import Logo from './Logo.astro';
 import { nav } from '../data/site';
 ---
 
-<header class="site-header">
+<header class="site-header" data-header>
   <div class="pw-container bar">
-    <a href="/" class="home" aria-label="Plainweb home"><Logo /></a>
+    <a href="/" class="home" aria-label="Plainweb home" data-home><Logo /></a>
 
     <nav aria-label="Main" class="links">
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      {nav.map((item) => <a href={item.href} data-section={item.href.split('#')[1]}>{item.label}</a>)}
       <a href="/#start" class="pw-btn pw-btn-dark">Start a site</a>
     </nav>
 
     <details class="menu">
-      <summary>Menu</summary>
+      <summary>
+        <span class="bars" aria-hidden="true"><span></span><span></span></span>
+        <span class="when-closed">Menu</span><span class="when-open">Close</span>
+      </summary>
       <nav aria-label="Mobile" class="panel">
-        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        {nav.map((item) => <a href={item.href} data-section={item.href.split('#')[1]}>{item.label}</a>)}
         <a href="/#start" class="pw-btn pw-btn-dark pw-btn-block">Start a site</a>
       </nav>
     </details>
@@ -23,43 +26,144 @@ import { nav } from '../data/site';
 </header>
 
 <script>
-  // Close the mobile menu after choosing a link, or on Escape.
-  document.querySelectorAll<HTMLDetailsElement>('.menu').forEach((menu) => {
-    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => (menu.open = false)));
-    menu.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && menu.open) {
-        menu.open = false;
-        menu.querySelector('summary')?.focus();
-      }
-    });
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const menu = header.querySelector<HTMLDetailsElement>('.menu')!;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Sticky header: tuck it away while reading down the page, bring it back on any scroll up.
+  let lastY = window.scrollY;
+  let ticking = false;
+  const update = () => {
+    const y = window.scrollY;
+    const delta = y - lastY;
+    header.classList.toggle('is-stuck', y > 8);
+    const keepVisible = reduce.matches || menu.open || header.contains(document.activeElement) || y < 160;
+    if (keepVisible) header.classList.remove('is-hidden');
+    else if (delta > 6) header.classList.add('is-hidden');
+    else if (delta < -6) header.classList.remove('is-hidden');
+    if (Math.abs(delta) > 6) lastY = y;
+    ticking = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) { window.requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
+  update();
+
+  // On the homepage, the logo scrolls back to the top instead of reloading.
+  header.querySelector('[data-home]')?.addEventListener('click', (event) => {
+    if (location.pathname === '/' || location.pathname === '/index.html') {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
+      history.replaceState(null, '', '/');
+    }
   });
+
+  // Underline the section you're reading.
+  const links = header.querySelectorAll<HTMLAnchorElement>('[data-section]');
+  const sections = [...new Set([...links].map((a) => a.dataset.section))]
+    .map((id) => (id ? document.getElementById(id) : null))
+    .filter((el): el is HTMLElement => !!el);
+  if (sections.length && 'IntersectionObserver' in window) {
+    const spy = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          links.forEach((a) => {
+            if (a.dataset.section === entry.target.id) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          });
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => spy.observe(s));
+    // Above the first section, nothing is current.
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      new IntersectionObserver(([e]) => { if (e.isIntersecting) links.forEach((a) => a.removeAttribute('aria-current')); }, { rootMargin: '-45% 0px -50% 0px' }).observe(hero);
+    }
+  }
+
+  // Mobile menu: close after choosing a link, on Escape, on a tap outside, or when the screen gets wide.
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => (menu.open = false)));
+  menu.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu.open) {
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+  });
+  window.matchMedia('(min-width: 901px)').addEventListener('change', (e) => { if (e.matches) menu.open = false; });
 </script>
 
 <style>
-  .site-header { background: var(--paper); border-bottom: var(--border-default) dashed var(--line); position: relative; z-index: 5; }
-  .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 76px; }
-  .home { text-decoration: none; color: var(--ink); }
-  .links { display: flex; align-items: center; gap: 1.75rem; font-size: 0.9375rem; font-weight: 500; }
-  .links a:not(.pw-btn) { text-decoration: none; padding: 6px 0; }
+  .site-header {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--paper); border-bottom: var(--border-default) dashed var(--line);
+    transition: transform var(--motion-200) var(--ease-out);
+  }
+  /* Once you leave the top, the spec line firms up into a solid rule. */
+  .site-header.is-stuck { border-bottom-style: solid; border-bottom-color: var(--ink); }
+  .site-header.is-hidden { transform: translateY(calc(-100% - 2px)); transition: transform var(--motion-150) var(--ease-in); }
 
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 76px; }
+  .home { text-decoration: none; color: var(--ink); border-radius: var(--radius-sm); transition: opacity var(--motion-150) var(--ease-out); }
+  .home:hover { color: var(--ink); opacity: 0.8; }
+
+  .links { display: flex; align-items: center; gap: 1.75rem; font-size: 0.9375rem; font-weight: 500; }
+  .links a:not(.pw-btn) { position: relative; text-decoration: none; padding: 6px 0; }
+  .links a:not(.pw-btn):hover { color: var(--ink); }
+  /* A cobalt underline draws in from the left on hover, and stays on the current section. */
+  .links a:not(.pw-btn)::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px;
+    background: var(--cobalt); transform: scaleX(0); transform-origin: left center;
+    transition: transform var(--motion-200) var(--ease-out);
+  }
+  .links a:not(.pw-btn):hover::after,
+  .links a[aria-current]::after { transform: scaleX(1); }
+
+  /* Mobile menu */
   .menu { display: none; }
   .menu summary {
-    list-style: none; cursor: pointer; display: inline-flex; align-items: center;
+    list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
     min-height: 44px; padding: 0 1.15rem; border: var(--border-default) solid var(--ink); border-radius: var(--radius-pill);
     background: var(--white); font-size: 0.9375rem; font-weight: 600;
   }
   .menu summary::-webkit-details-marker { display: none; }
   .menu[open] summary { background: var(--ink); color: var(--paper-raised); }
+  .when-open { display: none; }
+  .menu[open] .when-open { display: inline; }
+  .menu[open] .when-closed { display: none; }
+  .bars { position: relative; width: 16px; height: 10px; }
+  .bars span { position: absolute; left: 0; width: 16px; height: 2px; border-radius: 2px; background: currentColor; transition: transform var(--motion-150) var(--ease-out); }
+  .bars span:first-child { top: 0; }
+  .bars span:last-child { bottom: 0; }
+  .menu[open] .bars span:first-child { transform: translateY(4px) rotate(45deg); }
+  .menu[open] .bars span:last-child { transform: translateY(-4px) rotate(-45deg); }
+
   .panel {
     position: absolute; left: 0; right: 0; top: 100%;
     background: var(--paper); border-bottom: var(--border-default) solid var(--ink);
     display: flex; flex-direction: column; padding: var(--space-2) var(--space-6) var(--space-6);
   }
+  .menu[open] .panel { opacity: 1; transform: none; transition: opacity var(--motion-200) var(--ease-out), transform var(--motion-200) var(--ease-out); }
+  @starting-style { .menu[open] .panel { opacity: 0; transform: translateY(-8px); } }
   .panel a:not(.pw-btn) { padding: 14px 0; border-bottom: var(--border-hairline) solid var(--line-soft); text-decoration: none; font-size: 1.0625rem; font-weight: 500; }
+  .panel a[aria-current] { color: var(--cobalt); }
   .panel .pw-btn { margin-top: var(--space-5); }
 
   @media (max-width: 900px) {
     .links { display: none; }
     .menu { display: block; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header, .site-header.is-hidden, .bars span, .links a:not(.pw-btn)::after, .home { transition: none; }
+    .site-header.is-hidden { transform: none; }
+    .menu[open] .panel { transition: opacity var(--motion-100) linear; transform: none; }
+    @starting-style { .menu[open] .panel { opacity: 0; transform: none; } }
   }
 </style>

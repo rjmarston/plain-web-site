@@ -16,7 +16,12 @@ This is the Plainweb marketing site (Astro, hosted on Cloudflare). Plainweb sell
 - Borders are 1.5px ink. Shadows are hard ink offsets, never blurred.
 - One texture per section, and never two textured sections in a row.
 - Buttons: `pw-btn` plus one of `pw-btn-primary`, `-secondary`, `-dark`, `-warm`, `-ghost-light`. At least 44px tall.
-- Motion only on the hero timeline, once on load, and off under reduced motion.
+- Motion is for feedback and a few story moments, never decoration:
+  - Hover and press states on buttons, links and tier cards, plus the sticky header (hides on scroll down, returns on scroll up).
+  - Four moments that play once: the hero highlight, the ledger strike, the chat replay and the process bars. Mark new ones with `data-play`.
+  - Use the motion tokens (100 / 150 / 200 / 300ms; ease out to enter, ease in to leave) and animate only `transform` and `opacity`.
+  - Every animation needs a `prefers-reduced-motion: reduce` fallback, and content must show finished without JavaScript.
+  - The hero timeline and the chat pacing are the only longer timings. Nothing loops.
 
 ## Voice
 

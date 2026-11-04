@@ -13,18 +13,18 @@
     <span class="label project">birchwood-bakery</span>
   </div>
   <div class="body">
-    <span class="you">Can you change our Saturday hours to 9–2?</span>
+    <span class="you msg" style="--i: 0">Can you change our Saturday hours to 9–2?</span>
     <div class="claude">
-      <span class="tool">
+      <span class="tool msg" style="--i: 1">
         <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="M8.5 1.5 L10.5 3.5 L4 10 L1.5 10.5 L2 8 Z"></path></svg>
         Edited index.html, contact.html
       </span>
-      <div class="diff">
+      <div class="diff msg" style="--i: 2">
         <div class="remove"><span aria-hidden="true">−</span><span>Saturday · 10am – 4pm</span></div>
         <div class="add"><span aria-hidden="true">+</span><span>Saturday · 9am – 2pm</span></div>
       </div>
-      <p>Done. I updated your Saturday hours on the homepage and the contact page. Here’s the preview:</p>
-      <div class="preview">
+      <p class="msg" style="--i: 3">Done. I updated your Saturday hours on the homepage and the contact page. Here’s the preview:</p>
+      <div class="preview msg" style="--i: 4">
         <div class="bar"><span></span><span></span><span></span><span class="url">preview.birchwoodbakery.com</span></div>
         <div class="hours">
           <strong>Hours</strong>
@@ -33,10 +33,10 @@
           <div><span>Sunday</span><span>Closed</span></div>
         </div>
       </div>
-      <p>Want me to publish it?</p>
+      <p class="msg" style="--i: 5">Want me to publish it?</p>
     </div>
-    <span class="you">Yes, publish it.</span>
-    <p class="done">
+    <span class="you msg" style="--i: 6">Yes, publish it.</span>
+    <p class="done msg" style="--i: 7">
       <span class="check"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><path d="M2 5.2 L4.2 7.4 L8 2.8"></path></svg></span>
       Published. Your site is live with the new hours.
     </p>
@@ -77,4 +77,14 @@
   .input span:first-child { flex: 1; }
   .send { width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; background: var(--cobalt); display: flex; align-items: center; justify-content: center; }
   .send svg { stroke: var(--on-cobalt); }
+
+  /*
+    The conversation plays out once when it scrolls into view (the parent has data-play).
+    Paced like a chat rather than a list, so this is the one place messages are spaced 250ms apart.
+  */
+  :global(.js) [data-play] .msg { opacity: 0; transform: translateY(6px); transition: opacity var(--motion-200) var(--ease-out), transform var(--motion-200) var(--ease-out); transition-delay: calc(var(--i) * 250ms + 150ms); }
+  :global(.js) [data-play].is-in .msg { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) [data-play] .msg { opacity: 1; transform: none; transition: none; }
+  }
 </style>

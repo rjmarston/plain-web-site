@@ -11,14 +11,14 @@ const { panel } = why;
 
     <ol role="list" class="ledger">
       {why.ledger.map((row) => (
-        <li class="row">
+        <li class="row" data-play>
           <div class="statement">
             <span class="num">{row.n}</span>
             <h3>{row.statement}</h3>
           </div>
           <p class="cell">
             <span class="label then-label">THEN</span>
-            <span class="then">{row.then}</span>
+            <span class="then"><span>{row.then}</span><span class="strike" aria-hidden="true">{row.then}</span></span>
           </p>
           <p class="cell">
             <span class="label now-label">NOW</span>
@@ -50,7 +50,7 @@ const { panel } = why;
         </div>
         <div class="col">
           <p class="col-label spec today"><span>TODAY</span><span>2 messages</span></p>
-          <ChatDemo />
+          <div class="play" data-play><ChatDemo /></div>
         </div>
       </div>
     </div>
@@ -69,8 +69,23 @@ const { panel } = why;
   .cell { flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; font-size: 1.02rem; line-height: 1.45; }
   .then-label { color: var(--on-cobalt-label); }
   .now-label { color: var(--mint); }
-  .then { color: var(--on-cobalt-soft); text-decoration: line-through; text-decoration-color: var(--peach); text-decoration-thickness: 2px; }
+  .then { position: relative; display: block; color: var(--on-cobalt-soft); }
+  /* The peach strike is an overlay copy of the words, so it can draw across with a transform. */
+  .strike {
+    position: absolute; inset: 0; color: transparent;
+    text-decoration: line-through var(--peach) 2px; transform-origin: left center;
+  }
   .now { color: var(--on-cobalt); font-weight: 600; }
+  .play { flex: 1; display: flex; flex-direction: column; }
+
+  /* Each row: "then" gets crossed out, then "now" appears. Plays once. */
+  :global(.js) .row .strike { transform: scaleX(0); transition: transform var(--motion-300) var(--ease-out) 150ms; }
+  :global(.js) .row .now { opacity: 0; transition: opacity var(--motion-300) var(--ease-out) 400ms; }
+  :global(.js) .row.is-in .strike { transform: none; }
+  :global(.js) .row.is-in .now { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .row .strike, :global(.js) .row .now { transform: none; opacity: 1; transition: none; }
+  }
 
   /* The one-conversation panel */
   .panel { background: var(--white); color: var(--ink); border: var(--border-default) solid var(--ink); border-radius: var(--radius-xl); box-shadow: var(--shadow-hard-lg); padding: var(--space-8); display: flex; flex-direction: column; gap: 1.75rem; }

@@ -19,6 +19,15 @@ const year = new Date().getFullYear();
   .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem 2rem; padding-top: 1.75rem; padding-bottom: 1.75rem; }
   .home { text-decoration: none; }
   .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.875rem; }
-  .links a { color: var(--paper-raised); text-decoration: none; padding: 6px 0; }
-  .links a:hover { color: var(--peach); }
+  .links a { position: relative; color: var(--paper-raised); text-decoration: none; padding: 6px 0; }
+  .links a:hover { color: var(--paper-raised); }
+  .links a::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 2px; height: 1.5px; border-radius: 2px;
+    background: var(--peach); transform: scaleX(0); transform-origin: left center;
+    transition: transform var(--motion-200) var(--ease-out);
+  }
+  .links a:hover::after { transform: scaleX(1); }
+  .home { border-radius: var(--radius-sm); transition: opacity var(--motion-150) var(--ease-out); }
+  .home:hover { opacity: 0.8; }
+  @media (prefers-reduced-motion: reduce) { .links a::after, .home { transition: none; } }
 </style>

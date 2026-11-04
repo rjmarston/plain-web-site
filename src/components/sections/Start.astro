@@ -1,5 +1,6 @@
 ---
 import Cube from '../Cube.astro';
+import Arrow from '../Arrow.astro';
 import { start } from '../../data/home';
 import { site, startHref } from '../../data/site';
 ---
@@ -11,7 +12,7 @@ import { site, startHref } from '../../data/site';
       <h2 class="display-sm" id="start-title">{start.title}</h2>
       <p class="body-md intro">{start.intro}</p>
       <div class="actions">
-        <a href={startHref} class="pw-btn pw-btn-warm">{start.cta}</a>
+        <a href={startHref} class="pw-btn pw-btn-warm">{start.cta}<Arrow /></a>
         <a href={`mailto:${site.email}`} class="pw-btn pw-btn-ghost-light">Email {site.email}</a>
       </div>
     </div>

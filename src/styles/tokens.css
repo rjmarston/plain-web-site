@@ -77,7 +77,13 @@
   --shadow-hard-lg: 8px 8px 0 var(--ink);
   --shadow-sticky: 3px 4px 0 rgba(21, 23, 43, 0.18);
 
-  /* Motion */
+  /* Motion: durations are 100 / 150 / 200 / 300ms. Ease out on enter, ease in on exit. */
+  --motion-100: 100ms;
+  --motion-150: 150ms;
+  --motion-200: 200ms;
+  --motion-300: 300ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  /* Hero timeline only (an illustration, not UI): a small overshoot as cubes land. */
   --ease-drop: cubic-bezier(0.3, 1.35, 0.5, 1);
 }
