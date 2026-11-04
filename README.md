@@ -38,16 +38,19 @@ Cloudflare builds every push to `main` (build command `npm run build`, output di
 
 ## Contact form
 
-`/start` posts to `/api/contact`, a small Cloudflare Worker (`worker/index.ts`) that checks the answers and emails them through Cloudflare, with Reply-To set to the person who filled it in. Everything else on the site is static files.
+`/start` posts to `/api/contact`, a small Cloudflare Worker (`worker/index.ts`) that checks the answers and emails them to `CONTACT_TO` (set in `wrangler.jsonc`), with Reply-To set to the person who filled it in. Everything else on the site is static files.
 
 After sending, the form is replaced by a Cal.com calendar for booking a 30-minute call, filled in with the person's name, email and a short summary of their answers. The booking link is `booking` in `src/data/site.ts`. The calendar script only loads after someone sends the form. If it can't load, the page links to the booking page instead, and the no-JavaScript thanks page (`/start/sent`) links there too.
 
-Before the form goes live:
+Emails go out through [Resend](https://resend.com) (free plan) from `forms@plain-web.com`. One-time setup:
 
-1. **Don't turn on Email Routing for plain-web.com itself.** Its mail is handled by Google Workspace, and Email Routing would replace Google's MX record. The form's sending address needs to move to a subdomain (for example `forms.plain-web.com`) that Cloudflare can send from. This is still to do.
-2. **Workers & Pages → plain-web-site → Settings → Variables and secrets → Add**: a **Secret** named `CONTACT_TO` set to the address that should receive submissions (verified as a Cloudflare email destination). Add it under both **Production** and **Previews Base** if you want previews to send too.
+1. **Resend → Domains → Add domain**: `plain-web.com`. Let it add its records in Cloudflare, or add them by hand: an MX and a TXT record on `send`, and a TXT record on `resend._domainkey`. They don't touch the root MX records, which belong to Google Workspace.
+2. **Resend → API keys → Create**: sending access, limited to plain-web.com.
+3. **Cloudflare → Workers & Pages → plain-web-site → Settings → Variables and secrets → Add**: a **Secret** named `RESEND_API_KEY` with that key, under both **Production** and **Previews**.
 
-The address lives only in Cloudflare, not in this public repo. To test locally: `npm run build`, then `npx wrangler dev --var CONTACT_TO:you@example.com`; emails are written to `.wrangler/tmp/email/` instead of being sent.
+Don't turn on Cloudflare Email Routing for plain-web.com: it would replace Google's MX record.
+
+To test locally: `npm run build`, then `npx wrangler dev --var RESEND_API_KEY:test --var RESEND_API_URL:http://127.0.0.1:9999/emails` with a stand-in server on that port; without a key, the form shows its "couldn't send" message.
 
 Spam: a hidden field and a minimum fill time catch most bots. If spam gets through, add Cloudflare Turnstile.
 

@@ -19,11 +19,11 @@
     "html_handling": "auto-trailing-slash",
     "run_worker_first": ["/api/*"]
   },
-  // Sends contact form emails through Cloudflare Email Routing. The recipient is the
-  // CONTACT_TO secret (set in the dashboard), so the address isn't in this public repo.
-  "send_email": [{ "name": "EMAIL" }],
-  // Branch previews (npx wrangler preview) get the same email binding.
+  // Where "Start a site" submissions are emailed. They're sent through Resend, using the
+  // RESEND_API_KEY secret set in the Cloudflare dashboard (Production and Previews).
+  "vars": { "CONTACT_TO": "robert@plain-web.com" },
+  // Branch previews (npx wrangler preview). Vars aren't inherited, so they're repeated here.
   "previews": {
-    "send_email": [{ "name": "EMAIL" }]
+    "vars": { "CONTACT_TO": "robert@plain-web.com" }
   }
 }

@@ -3,20 +3,25 @@
   only requests to /api/* run this code (see run_worker_first in wrangler.jsonc).
 
   POST /api/contact  checks a "Start a site" submission and emails it to CONTACT_TO
-                     (a secret set in Cloudflare), with Reply-To set to the person who sent it.
+                     (set in wrangler.jsonc), with Reply-To set to the person who sent it.
+                     Emails go out through Resend (resend.com) from forms@plain-web.com,
+                     using the RESEND_API_KEY secret set in Cloudflare.
 */
 import { start } from '../src/data/start';
 import { site } from '../src/data/site';
 import { isEmail, isPhone, isWebsite, normalizeUrl } from '../src/lib/validate';
 
-interface Address { email: string; name?: string }
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
-  EMAIL: { send(message: { to: string; from: Address; replyTo?: Address; subject: string; text: string }): Promise<{ messageId: string }> };
-  CONTACT_TO?: string;
+  CONTACT_TO?: string; // where submissions go (wrangler.jsonc)
+  RESEND_API_KEY?: string; // secret, set in Cloudflare
+  RESEND_API_URL?: string; // only for testing locally against a stand-in
 }
 
-const FROM: Address = { email: 'hello@plain-web.com', name: 'Plainweb website' };
+// plain-web.com is verified in Resend; its records sit on send.plain-web.com and
+// resend._domainkey, so they don't touch Google's mail records for the domain.
+const FROM = 'Plainweb website <forms@plain-web.com>';
+const RESEND_URL = 'https://api.resend.com/emails';
 const MAX_BODY = 20_000;
 
 const oneLine = (s: string, max: number) => s.replace(/[\r\n\t]+/g, ' ').trim().slice(0, max);
@@ -112,22 +117,29 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   const errors = validate(d);
   if (Object.keys(errors).length) return wantsJson ? json(422, { errors }) : page(422, 'A few answers were missing.');
 
-  if (!env.CONTACT_TO) {
-    console.error('contact: CONTACT_TO secret is not set');
+  if (!env.CONTACT_TO || !env.RESEND_API_KEY) {
+    console.error('contact: CONTACT_TO or RESEND_API_KEY is not set');
     return failed(500, 'not_configured');
   }
 
   try {
-    await env.EMAIL.send({
-      to: env.CONTACT_TO,
-      from: FROM,
-      replyTo: { email: d.email, name: d.name },
-      subject: oneLine(`New site request: ${d.business}`, 140),
-      text: emailText(d),
+    const res = await fetch(env.RESEND_API_URL || RESEND_URL, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: FROM,
+        to: [env.CONTACT_TO],
+        reply_to: d.email,
+        subject: oneLine(`New site request: ${d.business}`, 140),
+        text: emailText(d),
+      }),
     });
+    if (!res.ok) {
+      console.error('contact: send failed', res.status, (await res.text()).slice(0, 300));
+      return failed(502, 'send_failed');
+    }
   } catch (err) {
-    const e = err as { code?: string; message?: string };
-    console.error('contact: send failed', e.code, e.message);
+    console.error('contact: send failed', (err as Error).message);
     return failed(502, 'send_failed');
   }
   return sent();
