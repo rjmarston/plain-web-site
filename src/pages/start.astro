@@ -6,6 +6,7 @@ import Arrow from '../components/Arrow.astro';
 import { start } from '../data/start';
 import { site, booking } from '../data/site';
 const s = start.sections;
+const f = start.fields;
 ---
 
 <Base title="Start a site" description="Tell us about your business and the site you need, then pick a time for a 30-minute call.">
@@ -29,107 +30,54 @@ const s = start.sections;
           <fieldset class="group">
             <legend class="group-title"><span class="spec">{s.you.n}</span> {s.you.title}</legend>
             <div class="pair">
-              <div class="field" data-field="name">
-                <label for="f-name">Name</label>
-                <input class="input" id="f-name" name="name" type="text" autocomplete="name" maxlength="100" required aria-describedby="f-name-err" />
-                <p class="error" id="f-name-err" hidden>{start.errors.name}</p>
+              <div class="field" data-field="firstName">
+                <label for="f-firstName">{f.firstName}</label>
+                <input class="input" id="f-firstName" name="first_name" type="text" autocomplete="given-name" maxlength="60" required aria-describedby="f-firstName-err" />
+                <p class="error" id="f-firstName-err" hidden>{start.errors.firstName}</p>
               </div>
+              <div class="field" data-field="lastName">
+                <label for="f-lastName">{f.lastName}</label>
+                <input class="input" id="f-lastName" name="last_name" type="text" autocomplete="family-name" maxlength="60" required aria-describedby="f-lastName-err" />
+                <p class="error" id="f-lastName-err" hidden>{start.errors.lastName}</p>
+              </div>
+            </div>
+            <div class="pair">
               <div class="field" data-field="email">
-                <label for="f-email">Email</label>
+                <label for="f-email">{f.email}</label>
                 <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="name@business.com" required aria-describedby="f-email-err" />
                 <p class="error" id="f-email-err" hidden>{start.errors.email}</p>
               </div>
+              <div class="field" data-field="phone">
+                <label for="f-phone">{f.phone} <span class="optional">{f.optional}</span></label>
+                <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="(555) 555-0100" aria-describedby="f-phone-err" />
+                <p class="error" id="f-phone-err" hidden>{start.errors.phone}</p>
+              </div>
             </div>
+          </fieldset>
+
+          <!-- 02 Your business -->
+          <fieldset class="group">
+            <legend class="group-title"><span class="spec">{s.business.n}</span> {s.business.title}</legend>
             <div class="field" data-field="business">
-              <label for="f-business">Business name</label>
+              <label for="f-business">{f.business}</label>
               <input class="input" id="f-business" name="business" type="text" autocomplete="organization" maxlength="120" required aria-describedby="f-business-err" />
               <p class="error" id="f-business-err" hidden>{start.errors.business}</p>
             </div>
-          </fieldset>
-
-          <!-- 02 Your website today -->
-          <fieldset class="group" data-field="hasSite" aria-describedby="f-hasSite-err">
-            <legend class="group-title"><span class="spec">{s.site.n}</span> {s.site.title}</legend>
-            <p class="question" id="q-site">Do you have one today?</p>
-            <div class="pills" role="radiogroup" aria-labelledby="q-site">
-              {start.hasSite.map((o) => (
-                <label class="pill"><input type="radio" name="has_site" value={o.value} required /><span>{o.label}</span></label>
-              ))}
+            <div class="field" data-field="website">
+              <label for="f-website">{f.website} <span class="optional">{f.optional}</span></label>
+              <input class="input" id="f-website" name="website" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="yourbusiness.com" aria-describedby="f-website-hint f-website-err" />
+              <p class="hint" id="f-website-hint">{f.websiteHint}</p>
+              <p class="error" id="f-website-err" hidden>{start.errors.website}</p>
             </div>
-            <p class="error" id="f-hasSite-err" hidden>{start.errors.hasSite}</p>
-            <div class="field reveal reveal-site" data-field="siteUrl">
-              <label for="f-site">Website address</label>
-              <input class="input" id="f-site" name="site_url" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="yourbusiness.com" aria-describedby="f-siteUrl-err" />
-              <p class="error" id="f-siteUrl-err" hidden>{start.errors.siteUrl}</p>
-            </div>
-          </fieldset>
-
-          <!-- 03 What you need -->
-          <fieldset class="group" data-field="need" aria-describedby="f-need-err">
-            <legend class="group-title"><span class="spec">{s.need.n}</span> {s.need.title}</legend>
-            <div class="choices">
-              {start.needs.map((o) => (
-                <label class="choice">
-                  <input type="radio" name="need" value={o.value} required />
-                  <span class="dot" aria-hidden="true"></span>
-                  <span class="choice-text">
-                    <span class="choice-title">{o.label}</span>
-                    <span class="choice-note">{o.note}</span>
-                  </span>
-                  <span class="spec choice-meta">{o.detail}</span>
-                </label>
-              ))}
-            </div>
-            <p class="error" id="f-need-err" hidden>{start.errors.need}</p>
-            <div class="reveal reveal-brand" data-field="brandType" aria-describedby="f-brandType-err">
-              <p class="question" id="q-brand">A new brand, or tweaks to the one you have?</p>
-              <div class="pills" role="radiogroup" aria-labelledby="q-brand">
-                {start.brandTypes.map((o) => (
-                  <label class="pill"><input type="radio" name="brand_type" value={o.value} /><span>{o.label}</span></label>
-                ))}
-              </div>
-              <p class="error" id="f-brandType-err" hidden>{start.errors.brandType}</p>
-            </div>
-          </fieldset>
-
-          <!-- 04 Size and timing (optional) -->
-          <fieldset class="group">
-            <legend class="group-title"><span class="spec">{s.scope.n}</span> {s.scope.title}</legend>
-            <p class="hint">{s.scope.note}</p>
-            <p class="question" id="q-size">About how many pages? <span class="optional">Optional</span></p>
-            <div class="pills" role="radiogroup" aria-labelledby="q-size">
-              {start.sizes.map((o) => (
-                <label class="pill"><input type="radio" name="size" value={o.value} /><span>{o.label}</span></label>
-              ))}
-            </div>
-            <p class="question" id="q-features">Features and tools you need <span class="optional">Optional · pick any</span></p>
-            <div class="pills" role="group" aria-labelledby="q-features">
-              {start.features.map((o) => (
-                <label class="pill pill-check">
-                  <input type="checkbox" name="features" value={o.value} />
-                  <svg aria-hidden="true" viewBox="0 0 18 18" width="14" height="14"><path d="M3.5 9.5l3.5 3.5 7.5-8"></path></svg>
-                  <span>{o.label}</span>
-                </label>
-              ))}
-            </div>
-            <p class="question" id="q-launch">When do you want to launch? <span class="optional">Optional</span></p>
-            <div class="pills" role="radiogroup" aria-labelledby="q-launch">
-              {start.launch.map((o) => (
-                <label class="pill"><input type="radio" name="launch" value={o.value} /><span>{o.label}</span></label>
-              ))}
-            </div>
-          </fieldset>
-
-          <!-- 05 Anything else -->
-          <fieldset class="group">
-            <legend class="group-title"><span class="spec">{s.notes.n}</span> {s.notes.title}</legend>
             <div class="field">
-              <label for="f-notes">Notes <span class="optional">Optional</span></label>
+              <label for="f-notes">{f.notes} <span class="optional">{f.optional}</span></label>
               <textarea class="input" id="f-notes" name="notes" rows="4" maxlength="3000" aria-describedby="f-notes-hint"></textarea>
-              <p class="hint" id="f-notes-hint">Pages you know you need, sites you like, or anything we should know.</p>
+              <p class="hint" id="f-notes-hint">{f.notesHint}</p>
             </div>
           </fieldset>
 
+          <!-- The package they looked at, if they came from a tier card (?need=). -->
+          <input type="hidden" name="need" value="" />
           <!-- Spam checks: a field people never see, and when the form was opened. -->
           <div class="trap" aria-hidden="true">
             <label for="f-url">Leave this empty</label>
@@ -172,6 +120,7 @@ const s = start.sections;
 <script>
   import { start } from '../data/start';
   import { site, booking } from '../data/site';
+  import { isEmail, isPhone, isWebsite, normalizeUrl } from '../lib/validate';
 
   // Cal.com's embed script queues calls made before it loads (window.Cal.q).
   type CalApi = ((...args: unknown[]) => void) & { q: unknown[][]; ns: Record<string, unknown>; loaded: boolean };
@@ -239,43 +188,31 @@ const s = start.sections;
     const label = button.querySelector<HTMLElement>('.submit-label')!;
     (form.elements.namedItem('t') as HTMLInputElement).value = String(Date.now());
 
-    // Coming from a tier card? Pre-pick that tier.
-    const need = new URLSearchParams(location.search).get('need');
-    const pre = need && form.querySelector<HTMLInputElement>(`input[name="need"][value="${CSS.escape(need)}"]`);
-    if (pre) pre.checked = true;
+    // Coming from a tier card? Send that package along with the answers.
+    const tier = start.needs.find((o) => o.value === new URLSearchParams(location.search).get('need'));
+    if (tier) (form.elements.namedItem('need') as HTMLInputElement).value = tier.value;
 
     const value = (name: string) => {
       const el = form.elements.namedItem(name);
-      if (el instanceof RadioNodeList) return el.value;
       return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement ? el.value.trim() : '';
     };
-    const normalizeUrl = (raw: string) => {
-      try {
-        const u = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
-        return u.hostname.includes('.') ? u.href : '';
-      } catch { return ''; }
-    };
-    // Each rule returns true when the answer is fine. Hidden follow-ups only count when shown.
+    // Each rule returns true when the answer is fine. Phone and website are optional.
     const rules: Record<string, () => boolean> = {
-      name: () => value('name').length > 0,
-      email: () => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value('email')),
+      firstName: () => value('first_name').length > 0,
+      lastName: () => value('last_name').length > 0,
+      email: () => isEmail(value('email')),
+      phone: () => isPhone(value('phone')),
       business: () => value('business').length > 0,
-      hasSite: () => value('has_site') !== '',
-      siteUrl: () => value('has_site') !== 'yes' || normalizeUrl(value('site_url')) !== '',
-      need: () => value('need') !== '',
-      brandType: () => value('need') !== 'brand' || value('brand_type') !== '',
+      website: () => isWebsite(value('website')),
     };
 
     const fieldEl = (key: string) => form.querySelector<HTMLElement>(`[data-field="${key}"]`)!;
-    const control = (key: string) => fieldEl(key).querySelector<HTMLInputElement | HTMLTextAreaElement>('input.input, textarea.input');
+    const control = (key: string) => fieldEl(key).querySelector<HTMLInputElement>('input.input')!;
     const setError = (key: string, on: boolean) => {
-      const box = fieldEl(key);
       const err = form.querySelector<HTMLElement>(`#f-${key}-err`);
-      box.classList.toggle('is-invalid', on);
+      fieldEl(key).classList.toggle('is-invalid', on);
       if (err) err.hidden = !on;
-      const c = control(key);
-      if (c) c.setAttribute('aria-invalid', String(on));
-      else box.querySelectorAll('input').forEach((i) => i.setAttribute('aria-invalid', String(on)));
+      control(key).setAttribute('aria-invalid', String(on));
     };
     const check = (key: string) => { const ok = rules[key](); setError(key, !ok); return ok; };
 
@@ -291,21 +228,12 @@ const s = start.sections;
     document.addEventListener('pointercancel', release, true);
 
     // Text fields: check when you leave them; once flagged, clear as soon as you start fixing it.
-    for (const key of ['name', 'email', 'business', 'siteUrl']) {
-      const c = control(key)!;
+    for (const key of Object.keys(rules)) {
+      const c = control(key);
       c.addEventListener('blur', () => { if (pointerDown) pending.add(key); else check(key); });
       c.addEventListener('focus', () => { if (!jumping && fieldEl(key).classList.contains('is-invalid')) setError(key, false); });
       c.addEventListener('input', () => { if (fieldEl(key).classList.contains('is-invalid')) setError(key, false); });
     }
-    // Choices: clear the error as soon as something is picked.
-    form.addEventListener('change', (e) => {
-      const name = (e.target as HTMLInputElement).name;
-      const key = { has_site: 'hasSite', need: 'need', brand_type: 'brandType' }[name];
-      if (key && fieldEl(key).classList.contains('is-invalid')) check(key);
-      if (name === 'has_site' && value('has_site') === 'no') setError('siteUrl', false);
-      if (name === 'need' && value('need') !== 'brand') setError('brandType', false);
-    });
-
     let sending = false;
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -313,9 +241,8 @@ const s = start.sections;
       const failed = Object.keys(rules).filter((key) => !check(key));
       if (failed.length) {
         status.textContent = start.errors.summary;
-        const first = fieldEl(failed[0]);
         jumping = true;
-        (first.querySelector<HTMLElement>('input.input, textarea.input') ?? first.querySelector<HTMLElement>('input'))?.focus();
+        control(failed[0]).focus();
         jumping = false;
         return;
       }
@@ -325,8 +252,8 @@ const s = start.sections;
       label.textContent = start.sending;
       status.textContent = '';
       const data = new FormData(form);
-      const url = normalizeUrl(value('site_url'));
-      if (value('has_site') === 'yes' && url) data.set('site_url', url);
+      const url = normalizeUrl(value('website'));
+      if (url) data.set('website', url);
 
       try {
         const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
@@ -335,16 +262,16 @@ const s = start.sections;
           const keys = Object.keys(body.errors ?? {});
           keys.forEach((k) => { if (k in rules) setError(k, true); });
           status.textContent = start.errors.summary;
-          if (keys[0]) fieldEl(keys[0])?.querySelector<HTMLElement>('input')?.focus();
+          if (keys[0] && keys[0] in rules) control(keys[0]).focus();
         } else if (!res.ok) {
           throw new Error(String(res.status));
         } else {
           const n = start.bookingNotes;
-          const needLabel = start.needs.find((o) => o.value === value('need'))?.label ?? '';
           const notes = [
             `${n.business}: ${value('business')}`,
-            needLabel && `${n.need}: ${needLabel}`,
-            value('has_site') === 'yes' && url && `${n.site}: ${url}`,
+            url && `${n.website}: ${url}`,
+            value('phone') && `${n.phone}: ${value('phone')}`,
+            tier && `${n.need}: ${tier.label}`,
           ].filter(Boolean).join('\n');
           form.hidden = true;
           done.hidden = false;
@@ -352,7 +279,7 @@ const s = start.sections;
           document.querySelector('[data-layout]')?.classList.add('is-done');
           done.focus({ preventScroll: true });
           card.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-          openBooking(done, { name: value('name'), email: value('email'), notes });
+          openBooking(done, { name: `${value('first_name')} ${value('last_name')}`, email: value('email'), notes });
         }
       } catch {
         status.innerHTML = '';
@@ -387,16 +314,15 @@ const s = start.sections;
   form { display: flex; flex-direction: column; gap: var(--space-8); }
   form[hidden] { display: none; }
   .group { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
-  .group + .group { padding-top: var(--space-8); border-top: var(--border-default) dashed var(--line-soft); }
+  /* The dashed rule runs through the legend, so no extra space is needed under it. */
+  .group + .group { border-top: var(--border-default) dashed var(--line-soft); }
   .group-title { padding: 0; margin-bottom: var(--space-1); font-size: 1.1875rem; line-height: 1.3; font-weight: 600; letter-spacing: -0.02em; }
   .group-title .spec { color: var(--cobalt); margin-right: var(--space-2); }
 
   .pair { display: flex; flex-wrap: wrap; gap: var(--space-4); }
   .pair .field { flex: 1 1 220px; }
   .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  label, .question { font-size: 0.9375rem; line-height: 1.4; font-weight: 600; }
-  .question { margin-top: var(--space-2); }
-  legend + .question, legend + .hint { margin-top: 0; }
+  label { font-size: 0.9375rem; line-height: 1.4; font-weight: 600; }
   .optional { font-weight: 400; color: var(--ink-muted); margin-left: var(--space-1); }
   .hint { font-size: 0.875rem; line-height: 1.45; color: var(--ink-muted); }
   .error { display: flex; gap: 6px; align-items: baseline; font-size: 0.875rem; line-height: 1.45; color: var(--remove-ink); }
@@ -412,46 +338,6 @@ const s = start.sections;
   .input:hover { background: var(--paper-raised); }
   .input:focus { outline: 2px solid var(--cobalt); outline-offset: 2px; background: var(--white); }
   .is-invalid .input, .input[aria-invalid='true'] { border-color: var(--remove-ink); background: var(--remove-bg); }
-
-  /* Pills: yes/no, size, features and timing */
-  .pills { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  .pill { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 1rem; border: var(--border-default) solid var(--ink); border-radius: var(--radius-pill); background: var(--white); font-weight: 500; cursor: pointer; user-select: none; }
-  .pill input, .choice input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
-  .pill:hover { background: var(--paper); }
-  .pill:has(input:checked) { background: var(--ink); color: var(--paper-raised); }
-  .pill:has(input:focus-visible), .choice:has(input:focus-visible) { outline: 2px solid var(--cobalt); outline-offset: 3px; }
-  .pill-check svg { display: none; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .pill-check:has(input:checked) svg { display: block; }
-  .is-invalid > .pills .pill, .is-invalid .pill { border-color: var(--remove-ink); }
-
-  /* Need: one card per tier */
-  .choices { display: flex; flex-direction: column; gap: var(--space-3); }
-  .choice {
-    position: relative; display: flex; align-items: center; gap: var(--space-4); padding: 14px 16px;
-    border: var(--border-default) solid var(--ink); border-radius: var(--radius-lg); background: var(--white); cursor: pointer;
-    transition: transform var(--motion-150) var(--ease-out);
-  }
-  .choice:hover { background: var(--paper-raised); }
-  .dot { width: 20px; height: 20px; flex-shrink: 0; border: var(--border-default) solid var(--ink); border-radius: 50%; background: var(--white); display: flex; align-items: center; justify-content: center; }
-  .dot::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--cobalt); opacity: 0; transform: scale(0.4); transition: opacity var(--motion-150) var(--ease-out), transform var(--motion-150) var(--ease-out); }
-  .choice-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-  .choice-title { font-weight: 600; line-height: 1.35; }
-  .choice-note { font-size: 0.9375rem; line-height: 1.4; color: var(--ink-muted); }
-  .choice-meta { color: var(--ink-muted); text-align: right; }
-  .choice:has(input:checked) { background: var(--paper); box-shadow: 3px 3px 0 var(--ink); transform: translate(-1px, -1px); }
-  .choice:has(input:checked) .dot::after { opacity: 1; transform: none; }
-  .choice:has(input:checked) .choice-meta { color: var(--cobalt); }
-  .is-invalid .choice { border-color: var(--remove-ink); }
-
-  /* Follow-up questions appear only when they apply. */
-  .reveal { display: none; flex-direction: column; gap: var(--space-3); }
-  form:has(input[name='has_site'][value='yes']:checked) .reveal-site,
-  form:has(input[name='need'][value='brand']:checked) .reveal-brand { display: flex; opacity: 1; transform: none; transition: opacity var(--motion-200) var(--ease-out), transform var(--motion-200) var(--ease-out); }
-  @starting-style {
-    form:has(input[name='has_site'][value='yes']:checked) .reveal-site,
-    form:has(input[name='need'][value='brand']:checked) .reveal-brand { opacity: 0; transform: translateY(-6px); }
-  }
-  .reveal-site { margin-top: var(--space-2); }
 
   .trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); padding-top: var(--space-2); }
@@ -483,18 +369,5 @@ const s = start.sections;
     .card { padding: var(--space-5); box-shadow: var(--shadow-hard); }
     .card.is-done { padding: var(--space-5) var(--space-4); }
     .done-head { flex-direction: column; gap: var(--space-4); }
-    .choice { flex-wrap: wrap; align-items: flex-start; }
-    .choice .dot { margin-top: 2px; }
-    .choice-meta { flex-basis: 100%; text-align: left; padding-left: calc(20px + var(--space-4)); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .choice, .dot::after { transition: none; }
-    .choice:has(input:checked) { transform: none; }
-    form:has(input[name='has_site'][value='yes']:checked) .reveal-site,
-    form:has(input[name='need'][value='brand']:checked) .reveal-brand { transition: none; transform: none; }
-    @starting-style {
-      form:has(input[name='has_site'][value='yes']:checked) .reveal-site,
-      form:has(input[name='need'][value='brand']:checked) .reveal-brand { opacity: 1; transform: none; }
-    }
   }
 </style>

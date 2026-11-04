@@ -6,6 +6,7 @@
                      (a secret set in Cloudflare), with Reply-To set to the person who sent it.
 */
 import { start } from '../src/data/start';
+import { isEmail, isPhone, isWebsite, normalizeUrl } from '../src/lib/validate';
 
 interface Address { email: string; name?: string }
 interface Env {
@@ -17,33 +18,22 @@ interface Env {
 const FROM: Address = { email: 'hello@plain-web.com', name: 'Plainweb website' };
 const MAX_BODY = 20_000;
 
-type Option = { readonly value: string; readonly label: string };
-const labelOf = (list: readonly Option[], value: string) => list.find((o) => o.value === value)?.label;
 const oneLine = (s: string, max: number) => s.replace(/[\r\n\t]+/g, ' ').trim().slice(0, max);
-
-function normalizeUrl(raw: string): string {
-  if (!raw) return '';
-  try {
-    const u = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
-    return u.hostname.includes('.') ? u.href : '';
-  } catch {
-    return '';
-  }
-}
 
 function readSubmission(form: FormData) {
   const get = (k: string) => String(form.get(k) ?? '').trim();
+  const firstName = oneLine(get('first_name'), 60);
+  const lastName = oneLine(get('last_name'), 60);
   return {
-    name: oneLine(get('name'), 100),
+    firstName,
+    lastName,
+    name: `${firstName} ${lastName}`.trim(),
     email: oneLine(get('email'), 254),
+    phone: oneLine(get('phone'), 30),
     business: oneLine(get('business'), 120),
-    hasSite: get('has_site'),
-    siteUrl: normalizeUrl(oneLine(get('site_url'), 300)),
-    need: get('need'),
-    brandType: get('brand_type'),
-    size: get('size'),
-    features: form.getAll('features').map(String).filter((f) => start.features.some((o) => o.value === f)),
-    launch: get('launch'),
+    website: oneLine(get('website'), 300),
+    // Only set when they came from a tier card on the homepage.
+    need: start.needs.find((o) => o.value === get('need')),
     notes: get('notes').slice(0, 3000),
     trap: get('url'),
     openedAt: Number(get('t')) || 0,
@@ -53,39 +43,33 @@ type Submission = ReturnType<typeof readSubmission>;
 
 function validate(d: Submission): Record<string, string> {
   const e: Record<string, string> = {};
-  if (!d.name) e.name = start.errors.name;
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) e.email = start.errors.email;
+  if (!d.firstName) e.firstName = start.errors.firstName;
+  if (!d.lastName) e.lastName = start.errors.lastName;
+  if (!isEmail(d.email)) e.email = start.errors.email;
+  if (!isPhone(d.phone)) e.phone = start.errors.phone;
   if (!d.business) e.business = start.errors.business;
-  if (!labelOf(start.hasSite, d.hasSite)) e.hasSite = start.errors.hasSite;
-  if (d.hasSite === 'yes' && !d.siteUrl) e.siteUrl = start.errors.siteUrl;
-  if (!labelOf(start.needs, d.need)) e.need = start.errors.need;
-  if (d.need === 'brand' && !labelOf(start.brandTypes, d.brandType)) e.brandType = start.errors.brandType;
+  if (!isWebsite(d.website)) e.website = start.errors.website;
   return e;
 }
 
 function emailText(d: Submission): string {
-  const need = start.needs.find((o) => o.value === d.need)!;
   const lines = [
     'New site request from plain-web.com/start',
     '',
     `Name:      ${d.name}`,
     `Email:     ${d.email}`,
+    `Phone:     ${d.phone || 'Not given'}`,
     `Business:  ${d.business}`,
-    `Website:   ${d.hasSite === 'yes' ? d.siteUrl : 'None yet'}`,
-    '',
-    `Needs:     ${need.label} (${need.detail})`,
+    `Website:   ${normalizeUrl(d.website) || 'None yet'}`,
   ];
-  if (d.need === 'brand') lines.push(`Brand:     ${labelOf(start.brandTypes, d.brandType)}`);
+  if (d.need) lines.push(`Package:   ${d.need.label}, ${d.need.detail} (they clicked it in the pricing section)`);
   lines.push(
-    `Pages:     ${labelOf(start.sizes, d.size) ?? 'Not answered'}`,
-    `Features:  ${d.features.length ? d.features.map((f) => labelOf(start.features, f)).join(', ') : 'None picked'}`,
-    `Launch:    ${labelOf(start.launch, d.launch) ?? 'Not answered'}`,
     '',
     'Notes:',
     d.notes || '(none)',
     '',
     '—',
-    `Reply to this email to answer ${d.name.split(' ')[0]} directly.`,
+    `Reply to this email to answer ${d.firstName} directly.`,
   );
   return lines.join('\n');
 }
