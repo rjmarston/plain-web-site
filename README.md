@@ -34,8 +34,8 @@ npm run check    # type-check the Astro files
 
 Cloudflare builds every push to `main` (build command `npm run build`, output directory `dist`). Other branches get preview links. Settings are in `wrangler.jsonc`.
 
-## Before launch
+## Domain and email
 
-- Set the real domain in `astro.config.mjs`, `public/robots.txt` and `wrangler.jsonc` (routes).
-- Set the real email address in `src/data/site.ts`. "Start a site" opens an email until there's a form.
+- The site is served at https://plain-web.com (and www), set in `wrangler.jsonc` and `astro.config.mjs`.
+- `hello@plain-web.com` is set in `src/data/site.ts`; Cloudflare Email Routing forwards it to the owner's inbox.
 - Update "It's 2026" in `src/data/home.ts` every January.

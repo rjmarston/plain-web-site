@@ -2,8 +2,14 @@
 {
   "name": "plain-web-site",
   "compatibility_date": "2026-10-01",
-  // Add the live domain here once it's registered, e.g.
-  // "routes": [{ "pattern": "plainweb.com", "custom_domain": true }],
+  // Serve the site on the domain. Both are added as Cloudflare custom domains on deploy.
+  "routes": [
+    { "pattern": "plain-web.com", "custom_domain": true },
+    { "pattern": "www.plain-web.com", "custom_domain": true }
+  ],
+  // Keep the workers.dev address, and a preview link for every branch.
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",

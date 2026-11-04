@@ -4,8 +4,8 @@ export const site = {
   tagline: 'Custom websites in two weeks.',
   description:
     'Custom websites for small businesses, designed, built and launched in two weeks. No WordPress, no retainer, from $2,000. Then we show you how to keep it current with Claude.',
-  // TODO: set the real address once the domain is registered.
-  email: 'hello@[YOUR DOMAIN]',
+  // Forwarded to the owner's inbox by Cloudflare Email Routing.
+  email: 'hello@plain-web.com',
 };
 
 // "Start a site" buttons open an email with this subject until there's a form.

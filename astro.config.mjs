@@ -3,8 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // The live domain. Used for canonical URLs, the sitemap and social cards.
-// TODO: replace with the real domain once it's registered.
-const SITE_URL = 'https://plainweb.example';
+const SITE_URL = 'https://plain-web.com';
 
 export default defineConfig({
   site: SITE_URL,
