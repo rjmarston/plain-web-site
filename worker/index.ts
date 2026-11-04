@@ -6,6 +6,7 @@
                      (a secret set in Cloudflare), with Reply-To set to the person who sent it.
 */
 import { start } from '../src/data/start';
+import { site } from '../src/data/site';
 import { isEmail, isPhone, isWebsite, normalizeUrl } from '../src/lib/validate';
 
 interface Address { email: string; name?: string }
@@ -81,7 +82,7 @@ function page(status: number, message: string) {
   // Plain fallback for people without JavaScript when something goes wrong.
   const html = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Plainweb</title>
 <body style="font:17px/1.6 system-ui,sans-serif;max-width:36rem;margin:15vh auto;padding:0 24px;color:#15172b;background:#f6f5f1">
-<p>${message}</p><p><a href="/start" style="color:#3346ff">Go back to the form</a> or email <a href="mailto:hello@plain-web.com" style="color:#3346ff">hello@plain-web.com</a>.</p></body>`;
+<p>${message}</p><p><a href="/start" style="color:#3346ff">Go back to the form</a> or email <a href="mailto:${site.directEmail}" style="color:#3346ff">${site.directEmail}</a>.</p></body>`;
   return new Response(html, { status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
 }
 

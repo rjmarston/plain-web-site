@@ -21,7 +21,7 @@ const f = start.fields;
             <li><span class="spec num">{step.n}</span><span><strong>{step.title}</strong> {step.body}</span></li>
           ))}
         </ol>
-        <p class="alt">{start.emailInstead} <a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <p class="alt">{start.emailInstead} <a href={`mailto:${site.directEmail}`}>{site.directEmail}</a></p>
       </div>
 
       <div class="card" data-card>
@@ -285,8 +285,8 @@ const f = start.fields;
         status.innerHTML = '';
         status.append(`${start.errors.failed} `);
         const a = document.createElement('a');
-        a.href = `mailto:${site.email}`;
-        a.textContent = site.email;
+        a.href = `mailto:${site.directEmail}`;
+        a.textContent = site.directEmail;
         status.append(a, '.');
       } finally {
         sending = false;
