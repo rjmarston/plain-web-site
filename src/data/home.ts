@@ -7,7 +7,7 @@ export const hero = {
   lede: 'Custom design and development, fast pages, and a simple way to keep it updated with AI. No WordPress. No retainer. From $2,000.',
   cta: 'Start a site',
   proof: [
-    { value: '14 days', label: 'kickoff to launch' },
+    { value: '14 days', label: 'typical kickoff to launch' },
     { value: 'From $2,000', label: 'custom, never a template' },
     { value: 'Yours', label: 'code, hosting and updates you control' },
   ],
@@ -56,8 +56,13 @@ export const why = {
 export const process = {
   eyebrow: '03 · Our process',
   title: 'Two weeks, start to finish.',
-  intro: 'A fixed schedule, so you always know what happens next and exactly when your site goes live.',
+  intro: 'A clear schedule, so you always know what happens next and when your site goes live.',
   hint: 'Pick a step for details',
+  // Shown under the chart.
+  timing: {
+    label: 'TIMING',
+    text: 'Most sites launch in 14 days. A bigger site, a lot of content or custom features can add a few days. We’ll confirm your launch date at kickoff.',
+  },
   // start and end are days 1–14; tone picks the bar color; icon picks the glyph in the detail box.
   phases: [
     {
@@ -96,7 +101,7 @@ export const process = {
 export const pricing = {
   eyebrow: '04 · Tiers of service',
   title: 'Pick your build.',
-  intro: 'Every package is custom, and every one is ready in 14 days. Each tier stacks on the one before it.',
+  intro: 'Every package is custom, and most launch in 14 days. Each tier stacks on the one before it.',
   // Prices are always shown as "From".
   tiers: [
     {

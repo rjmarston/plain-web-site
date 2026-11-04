@@ -84,6 +84,8 @@ const total = process.phases.length;
       <div class="box" aria-hidden="true"></div>
       <span class="neck" aria-hidden="true"></span>
     </div>
+
+    <p class="timing"><span class="label timing-label">{process.timing.label}</span> <span>{process.timing.text}</span></p>
   </div>
 </section>
 
@@ -172,6 +174,15 @@ const total = process.phases.length;
   :global(.js) [data-play]:not(.is-in) .bar { transform: scaleX(0); }
   :global(.js) [data-play].is-in .bar { animation: grow var(--motion-300) var(--ease-out) backwards; animation-delay: calc(var(--i) * 30ms + 150ms); }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* A spec-style footnote under the chart: when two weeks can stretch. */
+  .timing {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
+    max-width: 46rem; margin-top: calc(var(--space-12) * -1 + var(--space-6));
+    padding-left: var(--space-4); border-left: var(--border-default) dashed var(--ink-muted);
+    font-size: 0.9375rem; line-height: 1.5; color: var(--ink-muted);
+  }
+  .timing-label { color: var(--ink); }
 
   .toggle { display: none; }
   .box, .neck { display: none; }
