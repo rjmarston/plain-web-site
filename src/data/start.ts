@@ -5,11 +5,11 @@
 export const start = {
   eyebrow: 'Start a site',
   title: 'Tell us about your site.',
-  intro: 'A few questions, about two minutes. We’ll reply with a plan, a price and a launch date.',
+  intro: 'A few questions, about two minutes. Then pick a time for a 30-minute call about your site.',
   next: [
-    { n: '01', title: 'We read your answers', body: 'and look at your current site, if you have one.' },
-    { n: '02', title: 'We reply by email', body: 'with a plan, a price and a launch date.' },
-    { n: '03', title: 'We book your kickoff', body: 'and day 1 of your two weeks starts.' },
+    { n: '01', title: 'Send your answers', body: 'about your business and the site you need.' },
+    { n: '02', title: 'Pick a time to talk', body: 'for a 30-minute call, right after you send them.' },
+    { n: '03', title: 'We send a plan', body: 'with a price and a launch date.' },
   ],
   emailInstead: 'Rather email?',
 
@@ -74,11 +74,21 @@ export const start = {
     failed: 'We couldn’t send your answers. They’re still here, so try again, or email us at',
   },
 
+  // After sending: book the 30-minute call (the Cal.com link is in src/data/site.ts).
   success: {
     title: 'Thanks, we got your answers.',
-    body: 'We’ll email you back with a plan, a price and a launch date.',
+    body: 'Last step: pick a time for a 30-minute call. We’ll go over your answers and talk through your site.',
+    pick: 'Pick a time',
+    loading: 'Loading open times…',
+    slow: 'Calendar not loading?',
+    open: 'Open the booking page',
+    failed: 'The calendar didn’t load here. You can still pick a time on the booking page.',
+    bookedTitle: 'You’re booked.',
+    bookedBody: 'Check your email for the invite and the video call link.',
     back: 'Back to the homepage',
   },
+  // Sent along to the booking as notes, so the call has context.
+  bookingNotes: { business: 'Business', need: 'Needs', site: 'Current site' },
 } as const;
 
 export type Need = (typeof start.needs)[number]['value'];

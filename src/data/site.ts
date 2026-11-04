@@ -4,8 +4,14 @@ export const site = {
   tagline: 'Custom websites in two weeks.',
   description:
     'Custom websites for small businesses, designed, built and launched in two weeks. No WordPress, no retainer, from $2,000. Then we show you how to keep it current with Claude.',
-  // Forwarded to the owner's inbox by Cloudflare Email Routing.
+  // An alias in the owner's Google Workspace inbox (labelled Plainweb).
   email: 'hello@plain-web.com',
+};
+
+// The 30-minute call people book after sending the "Start a site" form (a Cal.com booking link).
+export const booking = {
+  link: 'rjmarston/plainweb-intro',
+  url: 'https://cal.com/rjmarston/plainweb-intro',
 };
 
 // Every "Start a site" button goes to the contact form. Tier buttons add ?need=<tier>.
