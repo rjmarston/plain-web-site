@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { nav } from '../data/site';
+import { nav, startHref } from '../data/site';
 ---
 
 <header class="site-header" data-header>
@@ -9,7 +9,7 @@ import { nav } from '../data/site';
 
     <nav aria-label="Main" class="links">
       {nav.map((item) => <a href={item.href} data-section={item.href.split('#')[1]}>{item.label}</a>)}
-      <a href="/#start" class="pw-btn pw-btn-dark">Start a site</a>
+      <a href={startHref} class="pw-btn pw-btn-dark">Start a site</a>
     </nav>
 
     <details class="menu">
@@ -19,7 +19,7 @@ import { nav } from '../data/site';
       </summary>
       <nav aria-label="Mobile" class="panel">
         {nav.map((item) => <a href={item.href} data-section={item.href.split('#')[1]}>{item.label}</a>)}
-        <a href="/#start" class="pw-btn pw-btn-dark pw-btn-block">Start a site</a>
+        <a href={startHref} class="pw-btn pw-btn-dark pw-btn-block">Start a site</a>
       </nav>
     </details>
   </div>

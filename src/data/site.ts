@@ -8,8 +8,8 @@ export const site = {
   email: 'hello@plain-web.com',
 };
 
-// "Start a site" buttons open an email with this subject until there's a form.
-export const startHref = `mailto:${site.email}?subject=${encodeURIComponent('Start a site')}`;
+// Every "Start a site" button goes to the contact form. Tier buttons add ?need=<tier>.
+export const startHref = '/start';
 
 export const nav = [
   { label: 'What we do', href: '/#what' },
@@ -23,5 +23,5 @@ export const footerNav = [
   { label: 'What we do', href: '/#what' },
   { label: 'Process', href: '/#process' },
   { label: 'Pricing', href: '/#pricing' },
-  { label: 'Contact', href: '/#start' },
+  { label: 'Contact', href: '/start' },
 ];

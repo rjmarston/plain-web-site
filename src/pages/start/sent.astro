@@ -1,0 +1,23 @@
+---
+// Shown after sending the form when JavaScript is off (the form posts and the worker redirects here).
+import Base from '../../layouts/Base.astro';
+import Cube from '../../components/Cube.astro';
+import { start } from '../../data/start';
+---
+
+<Base title="Thanks" noindex>
+  <section class="pw-section pw-tex-iso">
+    <div class="pw-container">
+      <div class="sent">
+        <Cube palette="launch" size={56} />
+        <h1 class="heading-1">{start.success.title}</h1>
+        <p class="body-lg muted">{start.success.body}</p>
+        <p><a href="/" class="pw-btn pw-btn-primary">{start.success.back}</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sent { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); max-width: 40rem; }
+</style>

@@ -6,6 +6,7 @@ This is the Plainweb marketing site (Astro, hosted on Cloudflare). Plainweb sell
 
 - Words on the homepage: `src/data/home.ts`. Change copy there, not in the components.
 - Name, email, nav links: `src/data/site.ts`.
+- The "Start a site" form (`/start`): copy and answer options in `src/data/start.ts`. The worker (`worker/index.ts`) checks submissions against the same options, so add or rename choices there only.
 - Layout and styling of a section: `src/components/sections/<Section>.astro` (styles are scoped to the file).
 - Shared styles (buttons, chips, textures, type classes): `src/styles/global.css`.
 

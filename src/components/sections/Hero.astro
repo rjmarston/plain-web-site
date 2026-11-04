@@ -2,6 +2,7 @@
 import Timeline from '../Timeline.astro';
 import Arrow from '../Arrow.astro';
 import { hero } from '../../data/home';
+import { startHref } from '../../data/site';
 ---
 
 <section class="hero pw-tex-iso" aria-labelledby="hero-title">
@@ -11,7 +12,7 @@ import { hero } from '../../data/home';
       <h1 class="display" id="hero-title">{hero.title} <span class="pw-mark">{hero.highlight}</span></h1>
       <p class="body-lg muted lede">{hero.lede}</p>
       <div class="actions">
-        <a href="#start" class="pw-btn pw-btn-primary">{hero.cta}<Arrow /></a>
+        <a href={startHref} class="pw-btn pw-btn-primary">{hero.cta}<Arrow /></a>
       </div>
     </div>
     <div class="art">

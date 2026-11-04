@@ -3,9 +3,9 @@ import SectionHeader from '../SectionHeader.astro';
 import TierArt from '../TierArt.astro';
 import Arrow from '../Arrow.astro';
 import { pricing } from '../../data/home';
-import { site } from '../../data/site';
-// Each tier's button opens an email that already names the tier.
-const mailto = (subject: string) => `mailto:${site.email}?subject=${encodeURIComponent(subject)}`;
+import { startHref } from '../../data/site';
+// Each tier's button opens the contact form with that tier already picked.
+const needs = { 1: 'build', 2: 'content', 3: 'brand' } as const;
 ---
 
 <section class="pw-section rule-top" id="pricing" aria-labelledby="pricing-title">
@@ -28,7 +28,7 @@ const mailto = (subject: string) => `mailto:${site.email}?subject=${encodeURICom
                 </li>
               ))}
             </ul>
-            <a href={mailto(t.cta)} class="pw-btn pw-btn-primary pw-btn-block cta">{t.cta}<Arrow /></a>
+            <a href={`${startHref}?need=${needs[t.tier]}`} class="pw-btn pw-btn-primary pw-btn-block cta">{t.cta}<Arrow /></a>
           </div>
         </li>
       ))}
