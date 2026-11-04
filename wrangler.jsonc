@@ -10,6 +10,8 @@
   // Keep the workers.dev address, and a preview link for every branch.
   "workers_dev": true,
   "preview_urls": true,
+  // Settings for branch previews (npx wrangler preview). Empty: previews use the same static site.
+  "previews": {},
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page",
