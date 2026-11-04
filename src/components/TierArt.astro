@@ -1,0 +1,62 @@
+---
+// The cube stack for a tier: code (Build cube) → content (Launch cube) → brand (Brand cube).
+// Layers that aren't included yet are dashed outlines.
+interface Props { tier: 1 | 2 | 3; }
+const { tier } = Astro.props;
+const layers = [
+  { label: 'code', y: 142 },
+  { label: 'content', y: 108 },
+  { label: 'brand', y: 74 },
+];
+---
+
+<div class="art" aria-hidden="true">
+  <svg width="200" height="170" viewBox="0 0 200 170">
+    <path d="M70 96 L100 113 L70 130 L40 113 Z" class="white"></path>
+    <path d="M40 113 L70 130 L70 164 L40 147 Z" class="tint"></path>
+    <path d="M100 113 L70 130 L70 164 L100 147 Z" class="ink"></path>
+    {tier >= 2 ? (
+      <>
+        <path d="M70 62 L100 79 L70 96 L40 79 Z" class="white"></path>
+        <path d="M40 79 L70 96 L70 130 L40 113 Z" class="mint"></path>
+        <path d="M100 79 L70 96 L70 130 L100 113 Z" class="mint-deep"></path>
+      </>
+    ) : (
+      <path d="M70 62 L100 79 L100 113 L70 130 L40 113 L40 79 Z M40 79 L70 96 L100 79 M70 96 L70 130" class="ghost"></path>
+    )}
+    {tier >= 3 ? (
+      <>
+        <path d="M70 28 L100 45 L70 62 L40 45 Z" class="white"></path>
+        <path d="M40 45 L70 62 L70 96 L40 79 Z" class="peach"></path>
+        <path d="M100 45 L70 62 L70 96 L100 79 Z" class="cobalt"></path>
+      </>
+    ) : (
+      <path d="M70 28 L100 45 L100 79 L70 96 L40 79 L40 45 Z M40 45 L70 62 L100 45 M70 62 L70 96" class="ghost"></path>
+    )}
+    {layers.map((l, i) => (
+      <text x="110" y={l.y} class:list={{ off: i + 1 > tier }}>{i + 1 > tier ? `+ ${l.label}` : l.label}</text>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .art {
+    height: 170px; border-radius: var(--radius-md); border: var(--border-default) dashed var(--line-soft);
+    background-color: var(--paper-raised);
+    background-image:
+      repeating-linear-gradient(30deg, var(--grid-line) 0 1px, transparent 1px 20px),
+      repeating-linear-gradient(150deg, var(--grid-line) 0 1px, transparent 1px 20px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  svg { stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+  .white { fill: var(--white); }
+  .tint { fill: var(--tint); }
+  .ink { fill: var(--ink); }
+  .mint { fill: var(--mint); }
+  .mint-deep { fill: var(--mint-deep); }
+  .peach { fill: var(--peach); }
+  .cobalt { fill: var(--cobalt); }
+  .ghost { fill: none; stroke: var(--line); stroke-dasharray: 4 3; }
+  text { stroke: none; font: 400 12px var(--font-mono); fill: var(--ink); }
+  text.off { fill: var(--ink-muted); }
+</style>

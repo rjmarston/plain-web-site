@@ -1,0 +1,34 @@
+---
+import { integrations } from '../../data/home';
+---
+
+<section class="pw-section pw-tex-iso rule-top" id="integrations" aria-labelledby="integrations-title">
+  <div class="pw-container row">
+    <div class="copy">
+      <p class="eyebrow">{integrations.eyebrow}</p>
+      <h2 class="heading-1" id="integrations-title">{integrations.title}</h2>
+      <p class="pw-intro">{integrations.intro}</p>
+      <p class="muted note">{integrations.note}</p>
+    </div>
+    <ul role="list" class="tools">
+      {integrations.tools.map((t) => (
+        <li>
+          <span class="spec cat">{t.category}</span>
+          <span class="names">{t.names}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .pw-section > .row { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 3rem; }
+  .copy { flex: 1 1 360px; display: flex; flex-direction: column; gap: var(--space-4); }
+  .copy .pw-intro { flex: none; }
+  .note { max-width: 30rem; }
+  .tools { flex: 1.4 1 520px; min-width: 0; display: flex; flex-wrap: wrap; gap: var(--space-4); }
+  .tools li { flex: 1 1 220px; background: var(--white); border: var(--border-default) solid var(--ink); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .cat { color: var(--cobalt); }
+  .names { font-weight: 500; }
+  @media (max-width: 640px) { .tools { flex-basis: 100%; } }
+</style>

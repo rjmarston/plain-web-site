@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Cube from '../components/Cube.astro';
+---
+
+<Base title="Page not found" noindex>
+  <section class="pw-section pw-tex-iso">
+    <div class="pw-container">
+      <div class="lost">
+        <Cube palette="review" size={56} />
+        <p class="eyebrow">Error 404</p>
+        <h1 class="heading-1">This page isn’t on the <span class="pw-mark">plan.</span></h1>
+        <p class="body-lg muted">It may have moved, or it never existed. The homepage is a good place to start.</p>
+        <p><a href="/" class="pw-btn pw-btn-primary">Go to the homepage</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); max-width: 40rem; }
+</style>
