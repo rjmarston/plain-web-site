@@ -1,117 +1,48 @@
 ---
-// Page pattern: a single form page. Intro on the left, the form on the right (stacked on phones).
+// Page pattern: a booking page. A short intro, then the Cal.com calendar for a 30-minute call.
+// Without JavaScript (or if Cal.com can't load) it links to the booking page instead.
 import Base from '../layouts/Base.astro';
-import Cube from '../components/Cube.astro';
 import Arrow from '../components/Arrow.astro';
 import { start } from '../data/start';
 import { site, booking } from '../data/site';
-const s = start.sections;
-const f = start.fields;
+const c = start.calendar;
 ---
 
-<Base title="Start a site" description="Tell us about your business and the site you need, then pick a time for a 30-minute call.">
+<Base title="Start a site" description="Book a 30-minute call about your business and the site you need. We’ll follow up with a plan, a price and a launch date.">
   <section class="pw-section pw-tex-iso start" aria-labelledby="start-title">
-    <div class="pw-container layout" data-layout>
-      <div class="intro">
-        <p class="eyebrow">{start.eyebrow}</p>
-        <h1 class="heading-1" id="start-title">{start.title}</h1>
-        <p class="body-lg muted">{start.intro}</p>
-        <ol role="list" class="next">
-          {start.next.map((step) => (
-            <li><span class="spec num">{step.n}</span><span><strong>{step.title}</strong> {step.body}</span></li>
-          ))}
-        </ol>
-        <p class="alt">{start.emailInstead} <a href={`mailto:${site.directEmail}`}>{site.directEmail}</a></p>
+    <div class="pw-container">
+      <div class="head">
+        <div class="intro">
+          <p class="eyebrow">{start.eyebrow}</p>
+          <h1 class="heading-1" id="start-title">{start.title}</h1>
+          <p class="body-lg muted">{start.intro}</p>
+        </div>
+        <div class="aside">
+          <ol role="list" class="next">
+            {start.next.map((step) => (
+              <li><span class="spec num">{step.n}</span><span><strong>{step.title}</strong> {step.body}</span></li>
+            ))}
+          </ol>
+          <p class="alt">{start.emailInstead} <a href={`mailto:${site.directEmail}`}>{site.directEmail}</a></p>
+        </div>
       </div>
 
-      <div class="card" data-card>
-        <form method="post" action="/api/contact" novalidate data-contact>
-          <!-- 01 About you -->
-          <fieldset class="group">
-            <legend class="group-title"><span class="spec">{s.you.n}</span> {s.you.title}</legend>
-            <div class="pair">
-              <div class="field" data-field="firstName">
-                <label for="f-firstName">{f.firstName}</label>
-                <input class="input" id="f-firstName" name="first_name" type="text" autocomplete="given-name" maxlength="60" required aria-describedby="f-firstName-err" />
-                <p class="error" id="f-firstName-err" hidden>{start.errors.firstName}</p>
-              </div>
-              <div class="field" data-field="lastName">
-                <label for="f-lastName">{f.lastName}</label>
-                <input class="input" id="f-lastName" name="last_name" type="text" autocomplete="family-name" maxlength="60" required aria-describedby="f-lastName-err" />
-                <p class="error" id="f-lastName-err" hidden>{start.errors.lastName}</p>
-              </div>
-            </div>
-            <div class="pair">
-              <div class="field" data-field="email">
-                <label for="f-email">{f.email}</label>
-                <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="name@business.com" required aria-describedby="f-email-err" />
-                <p class="error" id="f-email-err" hidden>{start.errors.email}</p>
-              </div>
-              <div class="field" data-field="phone">
-                <label for="f-phone">{f.phone} <span class="optional">{f.optional}</span></label>
-                <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="(555) 555-0100" aria-describedby="f-phone-err" />
-                <p class="error" id="f-phone-err" hidden>{start.errors.phone}</p>
-              </div>
-            </div>
-          </fieldset>
-
-          <!-- 02 Your business -->
-          <fieldset class="group">
-            <legend class="group-title"><span class="spec">{s.business.n}</span> {s.business.title}</legend>
-            <div class="field" data-field="business">
-              <label for="f-business">{f.business}</label>
-              <input class="input" id="f-business" name="business" type="text" autocomplete="organization" maxlength="120" required aria-describedby="f-business-err" />
-              <p class="error" id="f-business-err" hidden>{start.errors.business}</p>
-            </div>
-            <div class="field" data-field="website">
-              <label for="f-website">{f.website} <span class="optional">{f.optional}</span></label>
-              <input class="input" id="f-website" name="website" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="yourbusiness.com" aria-describedby="f-website-hint f-website-err" />
-              <p class="hint" id="f-website-hint">{f.websiteHint}</p>
-              <p class="error" id="f-website-err" hidden>{start.errors.website}</p>
-            </div>
-            <div class="field">
-              <label for="f-notes">{f.notes} <span class="optional">{f.optional}</span></label>
-              <textarea class="input" id="f-notes" name="notes" rows="4" maxlength="3000" aria-describedby="f-notes-hint"></textarea>
-              <p class="hint" id="f-notes-hint">{f.notesHint}</p>
-            </div>
-          </fieldset>
-
-          <!-- The package they looked at, if they came from a tier card (?need=). -->
-          <input type="hidden" name="need" value="" />
-          <!-- Spam checks: a field people never see, and when the form was opened. -->
-          <div class="trap" aria-hidden="true">
-            <label for="f-url">Leave this empty</label>
-            <input id="f-url" name="url" type="text" tabindex="-1" autocomplete="off" />
+      <div class="card" role="region" aria-label={c.label}>
+        <p class="booked" role="status" aria-live="polite" data-booked></p>
+        <div class="book" data-book>
+          <p class="spec book-loading" data-book-loading>{c.loading}</p>
+          <div class="book-frame" id="book-frame"></div>
+          <div class="book-failed" data-book-failed hidden>
+            <p class="body-lg">{c.failed}</p>
+            <a class="pw-btn pw-btn-primary" href={booking.url} target="_blank" rel="noopener">{c.open}<Arrow /></a>
           </div>
-          <input type="hidden" name="t" value="" />
-
-          <div class="actions">
-            <button type="submit" class="pw-btn pw-btn-primary submit"><span class="submit-label">{start.submit}</span><Arrow /></button>
-            <p class="hint">{start.privacy}</p>
-          </div>
-          <p class="status" role="status" aria-live="polite"></p>
-        </form>
-
-        <!-- After sending: book the 30-minute call. The Cal.com calendar only loads at this point. -->
-        <div class="done" tabindex="-1" hidden data-done>
-          <div class="done-head">
-            <Cube palette="launch" size={48} />
-            <div class="done-text" aria-live="polite">
-              <h2 class="heading-2" data-done-title>{start.success.title}</h2>
-              <p class="body-lg muted" data-done-body>{start.success.body}</p>
+          <noscript>
+            <div class="book-failed">
+              <a class="pw-btn pw-btn-primary" href={booking.url}>{c.open}<Arrow /></a>
             </div>
-          </div>
-          <div class="book" data-book>
-            <p class="spec book-loading" data-book-loading>{start.success.loading}</p>
-            <div class="book-frame" id="book-frame"></div>
-            <div class="book-failed" data-book-failed hidden>
-              <p class="body-lg">{start.success.failed}</p>
-              <a class="pw-btn pw-btn-primary" href={booking.url} target="_blank" rel="noopener">{start.success.open}<Arrow /></a>
-            </div>
-          </div>
-          <p class="hint book-alt" data-book-alt>{start.success.slow} <a href={booking.url} target="_blank" rel="noopener">{start.success.open}</a></p>
-          <p data-book-back hidden><a href="/" class="pw-btn pw-btn-secondary">{start.success.back}</a></p>
+          </noscript>
         </div>
+        <p class="hint book-alt" data-book-alt>{c.slow} <a href={booking.url} target="_blank" rel="noopener">{c.open}</a></p>
       </div>
     </div>
   </section>
@@ -119,8 +50,7 @@ const f = start.fields;
 
 <script>
   import { start } from '../data/start';
-  import { site, booking } from '../data/site';
-  import { isEmail, isPhone, isWebsite, normalizeUrl } from '../lib/validate';
+  import { booking } from '../data/site';
 
   // Cal.com's embed script queues calls made before it loads (window.Cal.q).
   type CalApi = ((...args: unknown[]) => void) & { q: unknown[][]; ns: Record<string, unknown>; loaded: boolean };
@@ -139,15 +69,12 @@ const f = start.fields;
     return w.Cal;
   };
 
-  // Show the booking calendar, filled in with what they just told us.
-  const openBooking = (done: HTMLElement, prefill: { name: string; email: string; notes: string }) => {
-    const book = done.querySelector<HTMLElement>('[data-book]')!;
-    const loading = done.querySelector<HTMLElement>('[data-book-loading]')!;
-    const failedBox = done.querySelector<HTMLElement>('[data-book-failed]')!;
-    const alt = done.querySelector<HTMLElement>('[data-book-alt]')!;
-    const back = done.querySelector<HTMLElement>('[data-book-back]')!;
-    const title = done.querySelector<HTMLElement>('[data-done-title]')!;
-    const body = done.querySelector<HTMLElement>('[data-done-body]')!;
+  const book = document.querySelector<HTMLElement>('[data-book]');
+  if (book) {
+    const loading = book.querySelector<HTMLElement>('[data-book-loading]')!;
+    const failedBox = book.querySelector<HTMLElement>('[data-book-failed]')!;
+    const alt = document.querySelector<HTMLElement>('[data-book-alt]')!;
+    const booked = document.querySelector<HTMLElement>('[data-booked]')!;
 
     let ready = false;
     const fail = () => {
@@ -156,15 +83,19 @@ const f = start.fields;
       loading.hidden = true; failedBox.hidden = false; alt.hidden = true;
     };
     const timer = setTimeout(fail, 15000);
+
+    // Came from a tier card? Note the package in the booking.
+    const tier = start.needs.find((o) => o.value === new URLSearchParams(location.search).get('need'));
+    const config: Record<string, string> = { layout: 'month_view', theme: 'light' };
+    if (tier) {
+      config.notes = `${start.packageNote}: ${tier.label} (${tier.detail})`;
+      config['metadata[package]'] = tier.value;
+    }
+
     const cal = loadCal(fail);
     const brand = getComputedStyle(document.documentElement).getPropertyValue('--cobalt').trim();
-
     cal('init', { origin: 'https://cal.com' });
-    cal('inline', {
-      elementOrSelector: '#book-frame',
-      calLink: booking.link,
-      config: { ...prefill, layout: 'month_view', theme: 'light' },
-    });
+    cal('inline', { elementOrSelector: '#book-frame', calLink: booking.link, config });
     cal('ui', { theme: 'light', layout: 'month_view', hideEventTypeDetails: false, cssVarsPerTheme: { light: { 'cal-brand': brand } } });
     cal('on', { action: 'linkReady', callback: () => {
       ready = true; clearTimeout(timer);
@@ -173,201 +104,45 @@ const f = start.fields;
     } });
     cal('on', { action: 'linkFailed', callback: () => { ready = false; fail(); } });
     cal('on', { action: 'bookingSuccessfulV2', callback: () => {
-      title.textContent = start.success.bookedTitle;
-      body.textContent = start.success.bookedBody;
-      alt.hidden = true; back.hidden = false;
+      booked.textContent = start.calendar.booked;
+      alt.hidden = true;
     } });
-  };
-
-  const form = document.querySelector<HTMLFormElement>('[data-contact]');
-  if (form) {
-    const card = document.querySelector<HTMLElement>('[data-card]')!;
-    const done = card.querySelector<HTMLElement>('[data-done]')!;
-    const status = form.querySelector<HTMLElement>('.status')!;
-    const button = form.querySelector<HTMLButtonElement>('.submit')!;
-    const label = button.querySelector<HTMLElement>('.submit-label')!;
-    (form.elements.namedItem('t') as HTMLInputElement).value = String(Date.now());
-
-    // Coming from a tier card? Send that package along with the answers.
-    const tier = start.needs.find((o) => o.value === new URLSearchParams(location.search).get('need'));
-    if (tier) (form.elements.namedItem('need') as HTMLInputElement).value = tier.value;
-
-    const value = (name: string) => {
-      const el = form.elements.namedItem(name);
-      return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement ? el.value.trim() : '';
-    };
-    // Each rule returns true when the answer is fine. Phone and website are optional.
-    const rules: Record<string, () => boolean> = {
-      firstName: () => value('first_name').length > 0,
-      lastName: () => value('last_name').length > 0,
-      email: () => isEmail(value('email')),
-      phone: () => isPhone(value('phone')),
-      business: () => value('business').length > 0,
-      website: () => isWebsite(value('website')),
-    };
-
-    const fieldEl = (key: string) => form.querySelector<HTMLElement>(`[data-field="${key}"]`)!;
-    const control = (key: string) => fieldEl(key).querySelector<HTMLInputElement>('input.input')!;
-    const setError = (key: string, on: boolean) => {
-      const err = form.querySelector<HTMLElement>(`#f-${key}-err`);
-      fieldEl(key).classList.toggle('is-invalid', on);
-      if (err) err.hidden = !on;
-      control(key).setAttribute('aria-invalid', String(on));
-    };
-    const check = (key: string) => { const ok = rules[key](); setError(key, !ok); return ok; };
-
-    // If you leave a field by clicking something else, wait until that click lands before
-    // showing an error, so the message can't shift the page under the pointer.
-    let pointerDown = false;
-    let jumping = false; // true while we move focus to the first problem after a submit
-    const pending = new Set<string>();
-    const flush = () => { pending.forEach((key) => check(key)); pending.clear(); };
-    document.addEventListener('pointerdown', () => { pointerDown = true; }, true);
-    const release = () => setTimeout(() => { pointerDown = false; flush(); }, 0);
-    document.addEventListener('pointerup', release, true);
-    document.addEventListener('pointercancel', release, true);
-
-    // Text fields: check when you leave them; once flagged, clear as soon as you start fixing it.
-    for (const key of Object.keys(rules)) {
-      const c = control(key);
-      c.addEventListener('blur', () => { if (pointerDown) pending.add(key); else check(key); });
-      c.addEventListener('focus', () => { if (!jumping && fieldEl(key).classList.contains('is-invalid')) setError(key, false); });
-      c.addEventListener('input', () => { if (fieldEl(key).classList.contains('is-invalid')) setError(key, false); });
-    }
-    let sending = false;
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (sending) return;
-      const failed = Object.keys(rules).filter((key) => !check(key));
-      if (failed.length) {
-        status.textContent = start.errors.summary;
-        jumping = true;
-        control(failed[0]).focus();
-        jumping = false;
-        return;
-      }
-
-      sending = true;
-      button.setAttribute('aria-busy', 'true');
-      label.textContent = start.sending;
-      status.textContent = '';
-      const data = new FormData(form);
-      const url = normalizeUrl(value('website'));
-      if (url) data.set('website', url);
-
-      try {
-        const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
-        if (res.status === 422) {
-          const body = await res.json().catch(() => ({}));
-          const keys = Object.keys(body.errors ?? {});
-          keys.forEach((k) => { if (k in rules) setError(k, true); });
-          status.textContent = start.errors.summary;
-          if (keys[0] && keys[0] in rules) control(keys[0]).focus();
-        } else if (!res.ok) {
-          throw new Error(String(res.status));
-        } else {
-          const n = start.bookingNotes;
-          const notes = [
-            `${n.business}: ${value('business')}`,
-            url && `${n.website}: ${url}`,
-            value('phone') && `${n.phone}: ${value('phone')}`,
-            tier && `${n.need}: ${tier.label}`,
-          ].filter(Boolean).join('\n');
-          form.hidden = true;
-          done.hidden = false;
-          card.classList.add('is-done');
-          document.querySelector('[data-layout]')?.classList.add('is-done');
-          done.focus({ preventScroll: true });
-          card.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-          openBooking(done, { name: `${value('first_name')} ${value('last_name')}`, email: value('email'), notes });
-        }
-      } catch {
-        status.innerHTML = '';
-        status.append(`${start.errors.failed} `);
-        const a = document.createElement('a');
-        a.href = `mailto:${site.directEmail}`;
-        a.textContent = site.directEmail;
-        status.append(a, '.');
-      } finally {
-        sending = false;
-        button.removeAttribute('aria-busy');
-        label.textContent = start.submit;
-      }
-    });
   }
 </script>
 
 <style>
-  .layout { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 4rem; align-items: start; }
-
-  /* Intro: stays in view on desktop while you fill in the form. */
-  .intro { position: sticky; top: 112px; display: flex; flex-direction: column; gap: var(--space-5); }
-  .next { display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-3); padding-top: var(--space-5); border-top: var(--border-default) dashed var(--line); }
+  /* Intro and steps side by side on desktop, stacked on phones. */
+  .head { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--space-6) 4rem; align-items: end; margin-bottom: var(--space-12); }
+  .intro { display: flex; flex-direction: column; gap: var(--space-5); max-width: 36rem; }
+  .aside { display: flex; flex-direction: column; gap: var(--space-5); }
+  .next { display: flex; flex-direction: column; gap: var(--space-4); }
   .next li { display: flex; gap: var(--space-4); align-items: baseline; color: var(--ink-muted); line-height: 1.5; }
   .next strong { color: var(--ink); font-weight: 600; }
   .num { color: var(--cobalt); }
-  .alt { color: var(--ink-muted); }
+  .alt { color: var(--ink-muted); padding-top: var(--space-4); border-top: var(--border-default) dashed var(--line); }
   .alt a { color: var(--ink); font-weight: 600; text-underline-offset: 3px; }
 
-  /* The form card */
-  .card { background: var(--white); border: var(--border-default) solid var(--ink); border-radius: var(--radius-xl); box-shadow: var(--shadow-hard-lg); padding: var(--space-8); }
-  form { display: flex; flex-direction: column; gap: var(--space-8); }
-  form[hidden] { display: none; }
-  .group { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
-  /* The dashed rule runs through the legend, so no extra space is needed under it. */
-  .group + .group { border-top: var(--border-default) dashed var(--line-soft); }
-  .group-title { padding: 0; margin-bottom: var(--space-1); font-size: 1.1875rem; line-height: 1.3; font-weight: 600; letter-spacing: -0.02em; }
-  .group-title .spec { color: var(--cobalt); margin-right: var(--space-2); }
-
-  .pair { display: flex; flex-wrap: wrap; gap: var(--space-4); }
-  .pair .field { flex: 1 1 220px; }
-  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  label { font-size: 0.9375rem; line-height: 1.4; font-weight: 600; }
-  .optional { font-weight: 400; color: var(--ink-muted); margin-left: var(--space-1); }
-  .hint { font-size: 0.875rem; line-height: 1.45; color: var(--ink-muted); }
-  .error { display: flex; gap: 6px; align-items: baseline; font-size: 0.875rem; line-height: 1.45; color: var(--remove-ink); }
-  .error::before { content: '!'; flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--remove-ink); color: var(--white); font: 700 11px/16px var(--font-sans); text-align: center; transform: translateY(2px); }
-  .error[hidden] { display: none; }
-
-  .input {
-    width: 100%; min-height: 48px; padding: 0 14px; border: var(--border-default) solid var(--ink); border-radius: var(--radius-md);
-    background: var(--white); font-size: 1rem; line-height: 1.4;
-  }
-  textarea.input { min-height: 120px; padding: 12px 14px; resize: vertical; }
-  .input::placeholder { color: var(--ink-placeholder); }
-  .input:hover { background: var(--paper-raised); }
-  .input:focus { outline: 2px solid var(--cobalt); outline-offset: 2px; background: var(--white); }
-  .is-invalid .input, .input[aria-invalid='true'] { border-color: var(--remove-ink); background: var(--remove-bg); }
-
-  .trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); padding-top: var(--space-2); }
-  .submit[aria-busy='true'] { cursor: progress; }
-  .status { font-size: 0.9375rem; line-height: 1.5; color: var(--remove-ink); }
-  .status:empty { display: none; }
-  .status a { color: var(--ink); font-weight: 600; }
-
-  /* After sending: the intro steps aside and the card widens to fit the booking calendar. */
-  .layout.is-done { grid-template-columns: minmax(0, 1fr); }
-  .layout.is-done .intro { display: none; }
-  .done { display: flex; flex-direction: column; gap: var(--space-6); outline: none; }
-  .done[hidden], .done [hidden] { display: none; }
-  .done-head { display: flex; gap: var(--space-5); align-items: flex-start; }
-  .done-text { display: flex; flex-direction: column; gap: var(--space-3); max-width: 44rem; }
-  .book { position: relative; min-height: 560px; padding-top: var(--space-6); border-top: var(--border-default) dashed var(--line-soft); }
+  /* The calendar card */
+  .card { display: flex; flex-direction: column; gap: var(--space-5); background: var(--white); border: var(--border-default) solid var(--ink); border-radius: var(--radius-xl); box-shadow: var(--shadow-hard-lg); padding: var(--space-6); }
+  .booked { font-weight: 600; }
+  .booked:empty { display: none; }
+  .book { position: relative; min-height: 560px; }
   .book.is-ready, .book.is-failed { min-height: 0; }
+  .book [hidden] { display: none; }
   .book-loading { color: var(--ink-muted); }
   .book-frame { width: 100%; }
   .book.is-failed .book-frame { display: none; }
   .book-failed { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+  .book-alt[hidden] { display: none; }
   .book-alt a { color: var(--ink); font-weight: 600; text-underline-offset: 3px; }
+  /* Without JavaScript there's no calendar, just the button to the booking page. */
+  :global(html:not(.js)) .book { min-height: 0; }
+  :global(html:not(.js)) .book-loading, :global(html:not(.js)) .book-alt { display: none; }
 
   @media (max-width: 900px) {
-    .layout { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
-    .intro { position: static; }
+    .head { grid-template-columns: minmax(0, 1fr); align-items: start; margin-bottom: var(--space-8); }
   }
   @media (max-width: 640px) {
-    .card { padding: var(--space-5); box-shadow: var(--shadow-hard); }
-    .card.is-done { padding: var(--space-5) var(--space-4); }
-    .done-head { flex-direction: column; gap: var(--space-4); }
+    .card { padding: var(--space-4); box-shadow: var(--shadow-hard); }
   }
 </style>

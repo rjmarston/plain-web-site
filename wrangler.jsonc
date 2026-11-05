@@ -1,9 +1,7 @@
-// Cloudflare settings: serve the built site in dist/, plus a small worker for the contact form.
+// Cloudflare settings: serve the built site in dist/ as static files.
 {
   "name": "plain-web-site",
   "compatibility_date": "2026-10-01",
-  // Handles /api/* only (the contact form). Every other request is a static file from dist/.
-  "main": "worker/index.ts",
   // Serve the site on the domain. Both are added as Cloudflare custom domains on deploy.
   "routes": [
     { "pattern": "plain-web.com", "custom_domain": true },
@@ -12,18 +10,11 @@
   // Keep the workers.dev address, and a preview link for every branch.
   "workers_dev": true,
   "preview_urls": true,
+  // Settings for branch previews (npx wrangler preview). Empty: previews use the same static site.
+  "previews": {},
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash",
-    "run_worker_first": ["/api/*"]
-  },
-  // Where "Start a site" submissions are emailed. They're sent through Resend, using the
-  // RESEND_API_KEY secret set in the Cloudflare dashboard (Production and Previews).
-  "vars": { "CONTACT_TO": "robert@plain-web.com" },
-  // Branch previews (npx wrangler preview). Vars aren't inherited, so they're repeated here.
-  "previews": {
-    "vars": { "CONTACT_TO": "robert@plain-web.com" }
+    "html_handling": "auto-trailing-slash"
   }
 }

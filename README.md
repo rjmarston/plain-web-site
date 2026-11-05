@@ -13,8 +13,7 @@ Marketing site for Plainweb: custom small-business websites in two weeks. Built 
 | Homepage sections | `src/components/sections/` |
 | Cube, logo, hero timeline, tier art, chat demo | `src/components/` |
 | Social share image, favicon, robots.txt | `public/` |
-| "Start a site" page copy and answer options | `src/data/start.ts` |
-| Contact form handler (emails each submission) | `worker/index.ts` |
+| "Start a site" page copy | `src/data/start.ts` |
 
 ## Design sources
 
@@ -36,23 +35,11 @@ npm run check    # type-check the Astro files
 
 Cloudflare builds every push to `main` (build command `npm run build`, output directory `dist`). Other branches get preview links. Settings are in `wrangler.jsonc`.
 
-## Contact form
+## Start a site page
 
-`/start` posts to `/api/contact`, a small Cloudflare Worker (`worker/index.ts`) that checks the answers and emails them to `CONTACT_TO` (set in `wrangler.jsonc`), with Reply-To set to the person who filled it in. Everything else on the site is static files.
+`/start` is a Cal.com booking calendar for a 30-minute call (the link is `booking` in `src/data/site.ts`). Every "Start a site" button goes there; tier buttons add `?need=<tier>`, which is added to the booking notes. The questions people answer when they book (business name, phone, website, notes) are set on the event in Cal.com, and Cal.com emails each booking to the owner. Without JavaScript, or if the calendar can't load, the page links to the booking page instead.
 
-After sending, the form is replaced by a Cal.com calendar for booking a 30-minute call, filled in with the person's name, email and a short summary of their answers. The booking link is `booking` in `src/data/site.ts`. The calendar script only loads after someone sends the form. If it can't load, the page links to the booking page instead, and the no-JavaScript thanks page (`/start/sent`) links there too.
-
-Emails go out through [Resend](https://resend.com) (free plan) from `forms@plain-web.com`. One-time setup:
-
-1. **Resend → Domains → Add domain**: `plain-web.com`. Let it add its records in Cloudflare, or add them by hand: an MX and a TXT record on `send`, and a TXT record on `resend._domainkey`. They don't touch the root MX records, which belong to Google Workspace.
-2. **Resend → API keys → Create**: sending access, limited to plain-web.com.
-3. **Cloudflare → Workers & Pages → plain-web-site → Settings → Variables and secrets → Add**: a **Secret** named `RESEND_API_KEY` with that key, under both **Production** and **Previews**.
-
-Don't turn on Cloudflare Email Routing for plain-web.com: it would replace Google's MX record.
-
-To test locally: `npm run build`, then `npx wrangler dev --var RESEND_API_KEY:test --var RESEND_API_URL:http://127.0.0.1:9999/emails` with a stand-in server on that port; without a key, the form shows its "couldn't send" message.
-
-Spam: a hidden field and a minimum fill time catch most bots. If spam gets through, add Cloudflare Turnstile.
+The site has no forms or server code of its own: everything is static files.
 
 ## Domain and email
 

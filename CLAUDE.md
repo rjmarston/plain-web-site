@@ -6,7 +6,7 @@ This is the Plainweb marketing site (Astro, hosted on Cloudflare). Plainweb sell
 
 - Words on the homepage: `src/data/home.ts`. Change copy there, not in the components.
 - Name, email, nav links and the Cal.com booking link: `src/data/site.ts`.
-- The "Start a site" form (`/start`): labels, hints and error messages in `src/data/start.ts`; the field checks in `src/lib/validate.ts`. The page and the worker (`worker/index.ts`) both use these, so a change there applies in both places. Adding a field means adding it to the page, the worker's `readSubmission` and `emailText`, and `start.ts`.
+- The "Start a site" page (`/start`): its copy in `src/data/start.ts`. The booking calendar is Cal.com; the questions people answer when booking are set on the event in Cal.com.
 - Layout and styling of a section: `src/components/sections/<Section>.astro` (styles are scoped to the file).
 - Shared styles (buttons, chips, textures, type classes): `src/styles/global.css`.
 
